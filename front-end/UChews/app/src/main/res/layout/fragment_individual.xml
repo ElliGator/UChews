@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.elli.uchews.IndividualFragment">
+
+
+    <ViewFlipper
+        android:id="@+id/view_flipper"
+        android:layout_above="@+id/chews_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:src="@drawable/flipper_logo"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:src="@drawable/pizza"/>
+        </LinearLayout>
+    </ViewFlipper>
+
+    <Button
+        android:id="@+id/yes_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_flipper"
+        android:layout_toLeftOf="@+id/chews_btn"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/yes_btn"
+        android:textSize="15sp"/>
+
+    <Button
+        android:id="@+id/chews_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/chews_btn"
+        android:textSize="15sp"
+        android:layout_marginBottom="20dp" />
+
+    <Button
+        android:id="@+id/no_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_flipper"
+        android:layout_toRightOf="@+id/chews_btn"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/no_btn"
+        android:textSize="15sp"/>
+
+</RelativeLayout>

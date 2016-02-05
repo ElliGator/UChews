@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">UChews</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_indiv_fragment">Hello Individual fragment</string>
+    <string name="cuisine_placeholder">Cuisine Type</string>
+    <string name="chews_btn">Chews</string>
+    <string name="yes_btn">Yes!</string>
+    <string name="works_btn">That Works</string>
+    <string name="no_btn">No Thanks</string>
+    <string name="history">History</string>
+</resources>
