@@ -54,4 +54,13 @@ public enum Cuisine {
         return factual_id;
     }
 
+    public static Cuisine getCuisineById(String cuisine_id){
+        for(Cuisine c: Cuisine.values()){
+            if(c.factual_id.equals(cuisine_id))
+                return c;
+        }
+
+        return null;
+    }
+
 }
