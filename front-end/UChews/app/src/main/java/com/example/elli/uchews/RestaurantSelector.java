@@ -62,6 +62,12 @@ public class RestaurantSelector {
 
         String response = factual.fetch(FACTUAL_RESTAURANT_TABLE, query).getJson();
 
+        try {
+            selectedRestaurants = parseRestaurants(new JSONObject(response));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         return selectedRestaurants;
     }
 
