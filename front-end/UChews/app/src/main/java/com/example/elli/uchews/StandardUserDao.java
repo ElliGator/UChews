@@ -1,5 +1,6 @@
 package com.example.elli.uchews;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -53,7 +54,34 @@ public class StandardUserDao implements UserDAO{
 
     @Override
     public User getUser(String email, String password) {
-        return null;
+        String params = "email=" + email + "&password=" + password;
+        byte[] paramData = params.getBytes(StandardCharsets.UTF_8);
+        int paramLength = paramData.length;
+
+        try {
+            HttpURLConnection conn = openWebServiceConnection(BASE_WEBSERVICE_URL + GET_USER_PATH, "POST");
+            conn.setRequestProperty("Content-Length", Integer.toString(paramLength));
+            DataOutputStream wr = new DataOutputStream( conn.getOutputStream());
+            wr.write(paramData);
+
+            String response = readResponse(conn);
+            return parseResponse(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private User parseResponse(String response) throws JSONException {
+        JSONObject resp = new JSONObject(response);
+        String email = resp.getString("email");
+        String fname = resp.getString("fname");
+        String lname = resp.getString("lname");
+        FactualLocality locality = FactualLocality.getLocalityByName(resp.getString("lname"));
+        JSONObject cuisines = resp.getJSONObject("cuisine_stats");
+
+        return new User(email, fname, lname, locality, cuisines);
     }
 
     @Override

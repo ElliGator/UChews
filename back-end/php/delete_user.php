@@ -4,8 +4,8 @@
 	ini_set('display_errors', 1);
 
 	//Get arguments
-	$email = $_GET['email'];
-	$pwd = $_GET['password'];
+	$email = $_REQUEST['email'];
+	$pwd = $_REQUEST['password'];
 
 	//Handle DB credentials
 	$creds = file_get_contents("/cise/homes/cwhitten/UChews/back-end/credentials.json");

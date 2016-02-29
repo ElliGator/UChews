@@ -4,11 +4,11 @@
 	ini_set('display_errors', 1);
 
 	//Get arguments
-	$email = $_GET['email'];
-	$pwd = $_GET['password'];
-	$fname = $_GET['fname'];
-	$lname = $_GET['lname'];
-	$locality = $_GET['locality'];
+	$email = $_REQUEST['email'];
+	$pwd = $_REQUEST['password'];
+	$fname = $_REQUEST['fname'];
+	$lname = $_REQUEST['lname'];
+	$locality = $_REQUEST['locality'];
 	//$cuisines = $_GET['cuisines'];
 	$cuisines = '{"312":"1"}';
 
