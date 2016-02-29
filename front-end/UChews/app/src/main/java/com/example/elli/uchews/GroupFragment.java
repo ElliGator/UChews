@@ -3,9 +3,9 @@ package com.example.elli.uchews;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +21,16 @@ import cw.wheel.widget.OnWheelChangedListener;
 import cw.wheel.widget.OnWheelScrollListener;
 import cw.wheel.widget.WheelView;
 
-
+// TODO: make sure images are added only once to wheel and pass weights to backend
 public class GroupFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private Button chews_btn;
     private LinearLayout cuisineList;
+    private SlotMachineAdapter slotMachineAdapter;
     // Wheel scrolled flag
     private boolean wheelScrolled;
+    private ArrayList<String> weights;
+
 
     public GroupFragment() {
         // Required empty public constructor
@@ -39,10 +42,17 @@ public class GroupFragment extends Fragment {
         return fragment;
     }
 
+    /********************************************
+     ********************************************
+     *************LIFE CYCLE METHODS*************
+     ********************************************
+     ********************************************/
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wheelScrolled = false;
+        slotMachineAdapter = new SlotMachineAdapter(getContext());
+        weights = new ArrayList<>();
         //getActivity().setContentView(R.layout.fragment_group);
     }
 
@@ -56,18 +66,27 @@ public class GroupFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        initWheel(R.id.slot_1);
+        //Thread initializes wheel view
+        Thread workerThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initWheel(R.id.slot_1);
+            }
+        });
 
+        workerThread.start();
+
+        //Chews button
         chews_btn = (Button) getActivity().findViewById(R.id.grp_chews_btn);
         chews_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mixWheel(R.id.slot_1);
             }
         });
-
+        //Supported cuisines
         cuisineList = (LinearLayout) getActivity().findViewById(R.id.cuisine_list);
 
-        updateStatus();
+        //updateStatus();
         loadCuisines();
     }
 
@@ -87,6 +106,12 @@ public class GroupFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    /********************************************
+     ********************************************
+     *****************LISTENERS******************
+     ********************************************
+     ********************************************/
 
     /**
      * This interface must be implemented by activities that contain this
@@ -118,28 +143,53 @@ public class GroupFragment extends Fragment {
         }
     };
 
-    /**
-     * Updates status
-     */
-    private void updateStatus() {
-
-    }
-
+    /********************************************
+     ********************************************
+     ***********CUISINE LIST METHODS*************
+     ********************************************
+     ********************************************/
     private void loadCuisines(){
-        for(int i=0; i < 21; i++){
-            TextView cuisine = new TextView(getContext());
-            cuisine.setWidth(120);
-            cuisine.setHeight(120);
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v;
 
-            cuisine.setText("Placeholder text");
-            cuisine.setBackgroundColor(Color.CYAN);
+        /*Populates Cuisine list with supported cuisines*/
+        for(Cuisine c : Cuisine.values()){
+            v = inflater.inflate(R.layout.cuisine_box_layout, cuisineList, false);
+            TextView cuisine = (TextView) v.findViewById(R.id.box);
+
+            cuisine.setText(c.getName());
+            cuisine.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    TextView tv = (TextView) v;
+                    addCuisine(tv.getText().toString());
+                    //weights.add(tv.getText().toString());
+                }
+            });
+
             cuisineList.addView(cuisine);
         }
     }
 
-    public void addCuisine(int position) {
-        // TODO: adds weights to cuisine types
+    /**
+     * Adds selected cuisine to wheel
+     * @param text selected cuisine String (text)
+     */
+    public void addCuisine(String text) {
+        for(Cuisine c: Cuisine.values()){
+            if(c.getName().equals(text)) {
+                slotMachineAdapter.addImage(c.getImage());
+                break;
+            }
+        }
+        slotMachineAdapter.notifyDataChangedEvent();
     }
+
+    /********************************************
+     ********************************************
+     ************WHEELVIEW METHODS***************
+     ********************************************
+     ********************************************/
 
     /**
      * Initializes wheel
@@ -147,7 +197,7 @@ public class GroupFragment extends Fragment {
      */
     private void initWheel(int id) {
         WheelView wheel = getWheel(id);
-        wheel.setViewAdapter(new SlotMachineAdapter(getContext()));
+        wheel.setViewAdapter(slotMachineAdapter);
         wheel.setCurrentItem((int)(Math.random() * 10));
 
         wheel.addChangingListener(changedListener);
@@ -163,6 +213,15 @@ public class GroupFragment extends Fragment {
      */
     private WheelView getWheel(int id) {
         return (WheelView) getActivity().findViewById(id);
+    }
+
+    /**
+     * Mixes wheel
+     * @param id the wheel id
+     */
+    private void mixWheel(int id) {
+        WheelView wheel = getWheel(id);
+        wheel.scroll(-350 + (int) (Math.random() * 50), 2000);
     }
 
     /**
@@ -185,17 +244,19 @@ public class GroupFragment extends Fragment {
     }
 
     /**
-     * Mixes wheel
-     * @param id the wheel id
+     * Updates status
      */
-    private void mixWheel(int id) {
-        WheelView wheel = getWheel(id);
-        wheel.scroll(-350 + (int)(Math.random() * 50), 2000);
+    private void updateStatus() {
+        //called test
     }
 
-    /**
-     * Slot machine adapter
-     */
+
+
+    /********************************************
+     ********************************************
+     ***********SLOT MACHINE ADAPTER*************
+     ********************************************
+     ********************************************/
     private class SlotMachineAdapter extends AbstractWheelAdapter {
         // Image size
         final int IMAGE_WIDTH = 700;
@@ -203,10 +264,6 @@ public class GroupFragment extends Fragment {
 
         // Slot machine symbols
         private final int items[] = new int[] {
-                android.R.drawable.star_big_on,
-                android.R.drawable.stat_sys_warning,
-                android.R.drawable.radiobutton_on_background,
-                android.R.drawable.ic_delete,
                 R.mipmap.ic_flipper
         };
 
@@ -221,7 +278,7 @@ public class GroupFragment extends Fragment {
          */
         public SlotMachineAdapter(Context context) {
             this.context = context;
-            images = new ArrayList<SoftReference<Bitmap>>(items.length);
+            images = new ArrayList<SoftReference<Bitmap>>(17);
             for (int id : items) {
                 images.add(new SoftReference<Bitmap>(loadImage(id)));
             }
@@ -239,7 +296,7 @@ public class GroupFragment extends Fragment {
 
         @Override
         public int getItemsCount() {
-            return items.length;
+            return images.size();
         }
 
         // Layout params for image view
@@ -263,6 +320,11 @@ public class GroupFragment extends Fragment {
             img.setImageBitmap(bitmap);
 
             return img;
+        }
+
+        //Adds Cuisine image to list of images
+        public void addImage(int img){
+            images.add(new SoftReference<Bitmap>(loadImage(img)));
         }
     }
 }

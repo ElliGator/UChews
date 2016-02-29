@@ -16,7 +16,7 @@ import android.widget.ViewFlipper;
 
 public class IndividualFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
-    private ViewFlipper mViewFlipper;
+
     private Button chews_btn;
     private Button works_btn;
     private Button nah_btn;
@@ -51,19 +51,7 @@ public class IndividualFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        mViewFlipper = (ViewFlipper) getActivity().findViewById(R.id.view_flipper);
-        mViewFlipper.setDisplayedChild(1);
 
-        final GestureDetector gesture = new GestureDetector(getContext(), new MyGestureListener(mViewFlipper));
-
-        mViewFlipper.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.i("OnTouch", "In onTouch" + gesture.onTouchEvent(event));
-
-                return gesture.onTouchEvent(event);
-            }
-        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
