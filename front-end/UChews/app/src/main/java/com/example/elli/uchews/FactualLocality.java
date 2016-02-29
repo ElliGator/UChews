@@ -16,4 +16,13 @@ public enum FactualLocality {
     public String getName() {
         return name;
     }
+
+    public static FactualLocality getLocalityByName(String name){
+        for(FactualLocality f: FactualLocality.values()){
+            if(f.name.equals(name))
+                return f;
+        }
+
+        return null;
+    }
 }
