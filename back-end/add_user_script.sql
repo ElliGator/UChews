@@ -1,0 +1,1 @@
+SELECT add_user('cwhitten', 'eda405cc8daadace0151fefa92d6ba7ddf1bb598', 'Chris', 'Whitten', 'Gainesville', '{"312":"1"}');
