@@ -71,7 +71,32 @@ public class RestaurantSelector {
         return selectedRestaurants;
     }
 
-    private Cuisine weightedSelect(HashMap<Cuisine, Integer> weights){
+    public ArrayList<Restaurant> groupSelect(Cuisine cSelection,FactualLocality locality, FactualRegion region ){
+        ArrayList<Restaurant> selectedRestaurants = new ArrayList<Restaurant>();
+
+        //Perform factual connection
+        Factual factual = new Factual(FACTUAL_KEY, FACTUAL_SECRET);
+
+        //Construct and run query
+        Query query = new Query().limit(queryLimit)
+                .field(FACTUAL_LOCALITY_FIELD).beginsWith(locality.getName())
+                .field(FACTUAL_REGION_FIELD).beginsWith(region.getName())
+                .field(FACTUAL_COUNTRY_FIELD).beginsWith("us")
+                .field(FACTUAL_CUISINE_ID_FIELD).includes(cSelection.getFactual_id())
+                .sortDesc(FACTUAL_RATING_FIELD);
+
+        String response = factual.fetch(FACTUAL_RESTAURANT_TABLE, query).getJson();
+
+        try {
+            selectedRestaurants = parseRestaurants(new JSONObject(response));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return selectedRestaurants;
+    }
+
+    public Cuisine weightedSelect(HashMap<Cuisine, Integer> weights){
         int totalWeight = 0;
         Iterator<Cuisine> i = weights.keySet().iterator();
 
