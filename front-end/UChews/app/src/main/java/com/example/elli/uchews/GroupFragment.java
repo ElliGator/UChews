@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import cw.wheel.widget.AbstractWheelAdapter;
 import cw.wheel.widget.OnWheelChangedListener;
@@ -22,14 +23,18 @@ import cw.wheel.widget.OnWheelScrollListener;
 import cw.wheel.widget.WheelView;
 
 // TODO: make sure images are added only once to wheel and pass weights to backend
+// TODO: make dialog popup after cuisine is selected and show available restaurants
 public class GroupFragment extends Fragment {
+    private User mUser;
+    private RestaurantSelector mSelector;
     private OnFragmentInteractionListener mListener;
     private Button chews_btn;
     private LinearLayout cuisineList;
     private SlotMachineAdapter slotMachineAdapter;
     // Wheel scrolled flag
     private boolean wheelScrolled;
-    private ArrayList<String> weights;
+    private HashMap<Cuisine, Integer> mCuisine_weights;
+    private ArrayList<Restaurant> mRestaurants;
 
 
     public GroupFragment() {
@@ -52,7 +57,7 @@ public class GroupFragment extends Fragment {
         super.onCreate(savedInstanceState);
         wheelScrolled = false;
         slotMachineAdapter = new SlotMachineAdapter(getContext());
-        weights = new ArrayList<>();
+        mCuisine_weights = new HashMap<Cuisine, Integer>(17);
         //getActivity().setContentView(R.layout.fragment_group);
     }
 
@@ -67,6 +72,7 @@ public class GroupFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         //Thread initializes wheel view
+        // TODO: Does this cause a memory leak?
         Thread workerThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -81,6 +87,8 @@ public class GroupFragment extends Fragment {
         chews_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mixWheel(R.id.slot_1);
+                //TODO: will return arraylist of restaurants to display
+                mRestaurants = mSelector.groupSelect(mCuisine_weights, mUser.getLocality(), FactualRegion.FLORIDA);
             }
         });
         //Supported cuisines
@@ -162,7 +170,8 @@ public class GroupFragment extends Fragment {
                 @Override
                 public void onClick(View v){
                     TextView tv = (TextView) v;
-                    addCuisine(tv.getText().toString());
+                    String sel_cuisine = tv.getText().toString();
+                    addCuisine(sel_cuisine);
                     //weights.add(tv.getText().toString());
                 }
             });
@@ -175,14 +184,30 @@ public class GroupFragment extends Fragment {
      * Adds selected cuisine to wheel
      * @param text selected cuisine String (text)
      */
-    public void addCuisine(String text) {
+    private void addCuisine(String text) {
         for(Cuisine c: Cuisine.values()){
             if(c.getName().equals(text)) {
                 slotMachineAdapter.addImage(c.getImage());
+                addCuisineWeight(c);
                 break;
             }
         }
         slotMachineAdapter.notifyDataChangedEvent();
+    }
+
+    /**
+     * Adds weight to selected cuisine
+     * @param c is the selected cuisine
+     */
+    private void addCuisineWeight(Cuisine c) {
+        if(!mCuisine_weights.containsKey(c)) {
+            mCuisine_weights.put(c, 1);
+        }
+        else {
+            int curr_weight = mCuisine_weights.get(c);
+            curr_weight = curr_weight + 1;
+            mCuisine_weights.put(c, curr_weight);
+        }
     }
 
     /********************************************

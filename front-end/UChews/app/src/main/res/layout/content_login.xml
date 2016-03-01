@@ -12,7 +12,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:src="@drawable/u_chews_logo"
+        android:src="@drawable/app_logo3"
         android:id="@+id/imageView"
         android:layout_above="@+id/register"
         android:layout_alignParentLeft="true"
