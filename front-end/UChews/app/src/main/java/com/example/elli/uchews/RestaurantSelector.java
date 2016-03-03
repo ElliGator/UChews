@@ -85,7 +85,8 @@ public class RestaurantSelector {
                 .field(FACTUAL_CUISINE_ID_FIELD).includes(cSelection.getFactual_id())
                 .sortDesc(FACTUAL_RATING_FIELD);
 
-        String response = factual.fetch(FACTUAL_RESTAURANT_TABLE, query).getJson();
+        //String response = factual.fetch(FACTUAL_RESTAURANT_TABLE, query).getJson();
+        String response =  factual.fetch("restaurants-us", new Query().limit(30).field("locality").beginsWith("Gainesville")).toString();
 
         try {
             selectedRestaurants = parseRestaurants(new JSONObject(response));
