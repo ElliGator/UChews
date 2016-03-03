@@ -1,7 +1,10 @@
 package com.example.elli.uchews;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by Chris on 2/23/2016.
@@ -16,9 +19,14 @@ public class Restaurant {
     private String zip_code;
     private double latitude;
     private double longitude;
-    private JSONArray cuisines; //TODO: Actually parse these into an arraylist
+    private JSONArray cuisines;
     private JSONObject hours; //TODO: Make a RestaurantHours class
     private String website;
+
+    //Flags for fields that may be null
+    private boolean hasCuisines;
+    private boolean hasHours;
+    private boolean hasWebsite;
 
 
     public Restaurant(String factual_id, String name, String address, String locality, String region, String zip_code, double latitude, double longitude, JSONArray cuisines, JSONObject hours, String website) {
@@ -33,8 +41,32 @@ public class Restaurant {
         this.cuisines = cuisines;
         this.hours = hours;
         this.website = website;
+
+        checkCuisines();
+        checkHours();
+        checkWebsite();
     }
 
+    private void checkCuisines(){
+        if(cuisines == null)
+            hasCuisines = false;
+        else
+            hasCuisines = true;
+    }
+
+    private void checkHours(){
+        if(hours == null)
+            hasHours = false;
+        else
+            hasHours = true;
+    }
+
+    private void checkWebsite(){
+        if(website == null)
+            hasWebsite = false;
+        else
+            hasWebsite = true;
+    }
 
 
     public String getId() {
@@ -69,7 +101,7 @@ public class Restaurant {
         return longitude;
     }
 
-    public JSONArray getCuisine() {
+    public JSONArray getCuisines() {
         return cuisines;
     }
 
@@ -79,5 +111,21 @@ public class Restaurant {
 
     public String getWebsite() {
         return website;
+    }
+
+    public ArrayList<Cuisine> getCuisineEnums(){
+        ArrayList<Cuisine> enums = new ArrayList<Cuisine>();
+        for(int i = 0; i < this.cuisines.length(); i++){
+
+            try {
+                int id = this.cuisines.getInt(i);
+                Cuisine curr = Cuisine.getCuisineById(id);
+                enums.add(curr);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return enums;
     }
 }
