@@ -1,5 +1,6 @@
 package com.example.elli.uchews;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -15,12 +16,12 @@ public class Restaurant {
     private String zip_code;
     private double latitude;
     private double longitude;
-    private JSONObject cuisines; //TODO: Actually parse these into an arraylist
+    private JSONArray cuisines; //TODO: Actually parse these into an arraylist
     private JSONObject hours; //TODO: Make a RestaurantHours class
     private String website;
 
 
-    public Restaurant(String factual_id, String name, String address, String locality, String region, String zip_code, double latitude, double longitude, JSONObject cuisines, JSONObject hours, String website) {
+    public Restaurant(String factual_id, String name, String address, String locality, String region, String zip_code, double latitude, double longitude, JSONArray cuisines, JSONObject hours, String website) {
         this.id = factual_id;
         this.name = name;
         this.address = address;
@@ -68,7 +69,7 @@ public class Restaurant {
         return longitude;
     }
 
-    public JSONObject getCuisine() {
+    public JSONArray getCuisine() {
         return cuisines;
     }
 

@@ -1,5 +1,7 @@
 package com.example.elli.uchews;
 
+import android.util.Log;
+
 import com.factual.driver.Factual;
 import com.factual.driver.Query;
 
@@ -85,13 +87,13 @@ public class RestaurantSelector {
                 .field(FACTUAL_CUISINE_ID_FIELD).includes(cSelection.getFactual_id())
                 .sortDesc(FACTUAL_RATING_FIELD);
 
-        //String response = factual.fetch(FACTUAL_RESTAURANT_TABLE, query).getJson();
-        String response =  factual.fetch("restaurants-us", new Query().limit(30).field("locality").beginsWith("Gainesville")).toString();
-
+        String response = factual.fetch(FACTUAL_RESTAURANT_TABLE, query).getJson();
+        Log.e("response", response);
         try {
             selectedRestaurants = parseRestaurants(new JSONObject(response));
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.e("jsonerror", e.toString());
         }
 
         return selectedRestaurants;
@@ -131,28 +133,57 @@ public class RestaurantSelector {
         return selectedCuisine;
     }
 
-    private ArrayList<Restaurant> parseRestaurants(JSONObject json) throws JSONException {
+    private ArrayList<Restaurant> parseRestaurants(JSONObject json){
         ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 
-        JSONArray data = (JSONArray) ((JSONObject) json.get("response")).get("data");
-        for(int i = 0; i < data.length(); i++) {
-            JSONObject currRest = data.getJSONObject(i);
-            String id = currRest.getString(FACTUAL_ID_FIELD);
-            String name = currRest.getString(FACTUAL_NAME_FIELD);
-            String zipcode = currRest.getString(FACTUAL_ZIPCODE_FIELD);
-            double latitude = currRest.getDouble(FACTUAL_LATITUDE_FIELD);
-            double longitude = currRest.getDouble(FACTUAL_LONGITUDE_FIELD);
-            String locality = currRest.getString(FACTUAL_LOCALITY_FIELD);
-            String region = currRest.getString(FACTUAL_REGION_FIELD);
-            String country = currRest.getString(FACTUAL_COUNTRY_FIELD);
-            String address = currRest.getString(FACTUAL_ADDRESS_FIELD);
-            JSONObject hours = currRest.getJSONObject(FACTUAL_HOURS_FIELD);
-            JSONObject cuisines = currRest.getJSONObject(FACTUAL_CUISINE_ID_FIELD);
-            String website = currRest.getString(FACTUAL_WEBSITE_FIELD);
+
+        JSONArray data = null;
+        try {
+            data = (JSONArray) ((JSONObject) json.get("response")).get("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        int size = data.length();
+
+        for(int i = 0; i < size; i++) {
+            boolean discardRest = false;
+            Restaurant curr = null;
+            try {
+                JSONObject currRest = data.getJSONObject(i);
+
+                String id = currRest.getString(FACTUAL_ID_FIELD);
+                String name = currRest.getString(FACTUAL_NAME_FIELD);
+                String zipcode = currRest.getString(FACTUAL_ZIPCODE_FIELD);
+                double latitude = currRest.getDouble(FACTUAL_LATITUDE_FIELD);
+                double longitude = currRest.getDouble(FACTUAL_LONGITUDE_FIELD);
+                String locality = currRest.getString(FACTUAL_LOCALITY_FIELD);
+                String region = currRest.getString(FACTUAL_REGION_FIELD);
+                String country = currRest.getString(FACTUAL_COUNTRY_FIELD);
+                String address = currRest.getString(FACTUAL_ADDRESS_FIELD);
+                JSONObject hours = null;
+                JSONArray cuisines = null;
+                String website = "";
+
+                //These are the only fields that won't cause the restaurant to be discarded
+                try {
+                    hours = currRest.getJSONObject(FACTUAL_HOURS_FIELD);
+                    cuisines = currRest.getJSONArray(FACTUAL_CUISINE_ID_FIELD);
+                    website = currRest.getString(FACTUAL_WEBSITE_FIELD);
+                }
+                catch (JSONException e){
+                    discardRest = false;
+                }
+
+                curr = new Restaurant(id, name, address, locality, region, zipcode, latitude, longitude, cuisines, hours, website);
+            }
+            catch (JSONException e){
+                discardRest = true;
+            }
 
 
-            Restaurant curr = new Restaurant(id, name, address, locality, region, zipcode, latitude, longitude, cuisines, hours, website);
-            restaurants.add(curr);
+            if(curr != null && !discardRest)
+                restaurants.add(curr);
         }
 
         return restaurants;
