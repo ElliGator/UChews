@@ -3,8 +3,11 @@ package com.example.elli.uchews;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +28,6 @@ import cw.wheel.widget.WheelView;
 // TODO: make sure images are added only once to wheel and pass weights to backend
 // TODO: make dialog popup after cuisine is selected and show available restaurants
 public class GroupFragment extends Fragment {
-    private User mUser;
-    private RestaurantSelector mSelector;
     private OnFragmentInteractionListener mListener;
     private Button chews_btn;
     private LinearLayout cuisineList;
@@ -35,6 +36,11 @@ public class GroupFragment extends Fragment {
     private boolean wheelScrolled;
     private HashMap<Cuisine, Integer> mCuisine_weights;
     private ArrayList<Restaurant> mRestaurants;
+    private Cuisine[] indexes;
+    private int global_index = 0;
+    private InitWheelTask mTask;
+    private SpinWheelTask mSpinTask;
+    private RestaurantDialog restaurantDialog;
 
 
     public GroupFragment() {
@@ -58,6 +64,7 @@ public class GroupFragment extends Fragment {
         wheelScrolled = false;
         slotMachineAdapter = new SlotMachineAdapter(getContext());
         mCuisine_weights = new HashMap<Cuisine, Integer>(17);
+        indexes = new Cuisine[17];
         //getActivity().setContentView(R.layout.fragment_group);
     }
 
@@ -73,24 +80,23 @@ public class GroupFragment extends Fragment {
 
         //Thread initializes wheel view
         // TODO: Does this cause a memory leak?
-        Thread workerThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                initWheel(R.id.slot_1);
-            }
-        });
-
-        workerThread.start();
+        mTask = new InitWheelTask();
+        mTask.execute(R.id.slot_1);
 
         //Chews button
         chews_btn = (Button) getActivity().findViewById(R.id.grp_chews_btn);
         chews_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mixWheel(R.id.slot_1);
+
+                mSpinTask = new SpinWheelTask();
+                mSpinTask.execute();
+
                 //TODO: will return arraylist of restaurants to display
-                mRestaurants = mSelector.groupSelect(mCuisine_weights, mUser.getLocality(), FactualRegion.FLORIDA);
+                //mRestaurants = mSelector.groupSelect(mCuisine_weights, mUser.getLocality(), FactualRegion.FLORIDA);
             }
         });
+        chews_btn.setEnabled(false);
         //Supported cuisines
         cuisineList = (LinearLayout) getActivity().findViewById(R.id.cuisine_list);
 
@@ -113,6 +119,8 @@ public class GroupFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mTask.cancel(true);
+        mSpinTask.cancel(true);
     }
 
     /********************************************
@@ -151,6 +159,7 @@ public class GroupFragment extends Fragment {
         }
     };
 
+
     /********************************************
      ********************************************
      ***********CUISINE LIST METHODS*************
@@ -169,10 +178,10 @@ public class GroupFragment extends Fragment {
             cuisine.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
+                    chews_btn.setEnabled(true);
                     TextView tv = (TextView) v;
                     String sel_cuisine = tv.getText().toString();
                     addCuisine(sel_cuisine);
-                    //weights.add(tv.getText().toString());
                 }
             });
 
@@ -186,8 +195,18 @@ public class GroupFragment extends Fragment {
      */
     private void addCuisine(String text) {
         for(Cuisine c: Cuisine.values()){
-            if(c.getName().equals(text)) {
+            Log.d("DEBUG ==>", "PRE - checking setInWheel value " + c.getName()+ " " + c.isInWheel());
+            if(c.getName().equals(text) && !c.isInWheel()) {
                 slotMachineAdapter.addImage(c.getImage());
+
+                //adds weight to the cuisine
+                addCuisineWeight(c);
+                //cuisine has been added to wheel
+                c.setInWheel(true);
+                Log.d("DEBUG ==>", "POST - checking setInWheel value " + c.getName()+ " " + c.isInWheel());
+                break;
+            }
+            else if(c.getName().equals(text) && c.isInWheel()){
                 addCuisineWeight(c);
                 break;
             }
@@ -202,6 +221,8 @@ public class GroupFragment extends Fragment {
     private void addCuisineWeight(Cuisine c) {
         if(!mCuisine_weights.containsKey(c)) {
             mCuisine_weights.put(c, 1);
+            indexes[global_index] = c;
+            incrementGlobalIndex();
         }
         else {
             int curr_weight = mCuisine_weights.get(c);
@@ -247,6 +268,9 @@ public class GroupFragment extends Fragment {
     private void mixWheel(int id) {
         WheelView wheel = getWheel(id);
         wheel.scroll(-350 + (int) (Math.random() * 50), 2000);
+
+        //Cuisine chosen = mSelector.weightedSelect(mCuisine_weights);
+        //wheel.setCurrentItem(getIndexOfCuisine(chosen));
     }
 
     /**
@@ -275,7 +299,25 @@ public class GroupFragment extends Fragment {
         //called test
     }
 
+    /********************************************
+     ********************************************
+     **************HELPER METHODS****************
+     ********************************************
+     ********************************************/
+    private int getIndexOfCuisine(Cuisine c) {
+        int i;
+        for(i = 0; i < indexes.length; i++) {
+            if(indexes[i].equals(c))
+                Log.d("DEBUG ==>", "index being returned is " + i);
+                return i+1;
+        }
 
+        return i;
+    }
+
+    private void incrementGlobalIndex() {
+        global_index++;
+    }
 
     /********************************************
      ********************************************
@@ -289,7 +331,7 @@ public class GroupFragment extends Fragment {
 
         // Slot machine symbols
         private final int items[] = new int[] {
-                R.mipmap.ic_flipper
+                R.mipmap.wheel_ic
         };
 
         // Cached images
@@ -350,6 +392,46 @@ public class GroupFragment extends Fragment {
         //Adds Cuisine image to list of images
         public void addImage(int img){
             images.add(new SoftReference<Bitmap>(loadImage(img)));
+        }
+    }
+
+    /********************************************
+     ********************************************
+     *************ASYNCHRONOUS TASKS*************
+     ********************************************
+     ********************************************/
+
+    private class InitWheelTask extends AsyncTask<Integer, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Integer... id) {
+            initWheel(id[0]);
+            return null;
+        }
+    }
+
+    private class SpinWheelTask extends AsyncTask<Void, Integer, Cuisine> {
+        WheelView wheel = getWheel(R.id.slot_1);
+        RestaurantSelector mSelector = new RestaurantSelector();
+
+        @Override
+        protected Cuisine doInBackground(Void... v) {
+            Cuisine chosen = mSelector.weightedSelect(mCuisine_weights);
+            mRestaurants = mSelector.groupSelect(mCuisine_weights, FactualLocality.GAINESVILLE, FactualRegion.FLORIDA);
+            Log.d("DEBUG ==>", "Size of restaurants arraylist" + mRestaurants.size());
+            return chosen;
+        }
+
+        @Override
+        protected void onPostExecute(Cuisine c) {
+            restaurantDialog = new RestaurantDialog();
+            if(wheel != null) {
+                Log.d("DEBUG ==>", "Index of " + c.getName() + " is " + getIndexOfCuisine(c));
+                wheel.setCurrentItem(getIndexOfCuisine(c));
+                //Dialog
+                restaurantDialog = RestaurantDialog.newInstance(c.getName() + "Restaurants", mRestaurants);
+                restaurantDialog.show(getFragmentManager(), c.getName() + "Restaurants");
+            }
         }
     }
 }
