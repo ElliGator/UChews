@@ -4,11 +4,9 @@ import android.util.Log;
 
 import com.factual.driver.Factual;
 import com.factual.driver.Query;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -114,7 +112,7 @@ public class RestaurantSelector {
 
 
         //Choose randomly
-        int random = (int) Math.random()* totalWeight;
+        int random = (int) (Math.random() * totalWeight);
 
         Cuisine selectedCuisine = Cuisine.BBQ;
 
