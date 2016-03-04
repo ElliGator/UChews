@@ -47,27 +47,6 @@ public class Restaurant {
         checkWebsite();
     }
 
-    private void checkCuisines(){
-        if(cuisines == null)
-            hasCuisines = false;
-        else
-            hasCuisines = true;
-    }
-
-    private void checkHours(){
-        if(hours == null)
-            hasHours = false;
-        else
-            hasHours = true;
-    }
-
-    private void checkWebsite(){
-        if(website == null)
-            hasWebsite = false;
-        else
-            hasWebsite = true;
-    }
-
 
     public String getId() {
         return id;
@@ -128,4 +107,26 @@ public class Restaurant {
 
         return enums;
     }
+
+    private void checkCuisines(){
+        if(cuisines == null)
+            hasCuisines = false;
+        else
+            hasCuisines = true;
+    }
+
+    private void checkHours(){
+        if(hours == null)
+            hasHours = false;
+        else
+            hasHours = true;
+    }
+
+    private void checkWebsite(){
+        if(website == null)
+            hasWebsite = false;
+        else
+            hasWebsite = true;
+    }
+
 }

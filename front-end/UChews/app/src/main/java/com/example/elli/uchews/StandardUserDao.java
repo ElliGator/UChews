@@ -1,7 +1,11 @@
 package com.example.elli.uchews;
 
+import android.util.Log;
+
+import org.apache.commons.codec.binary.Hex;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -27,6 +31,7 @@ public class StandardUserDao implements UserDAO{
 
     @Override
     public boolean addUser(String email, String password, String fname, String lname, FactualLocality locality, JSONObject cuisine_stats) {
+        password = hashPassword(password);
         String params = "email=" + email + "&password=" + password
                 + "&fname=" + fname
                 + "&lname=" + lname
@@ -39,8 +44,10 @@ public class StandardUserDao implements UserDAO{
             conn.setRequestProperty("Content-Length", Integer.toString(paramLength));
             DataOutputStream wr = new DataOutputStream( conn.getOutputStream());
             wr.write(paramData);
+            wr.close();
 
             String response = readResponse(conn);
+
             if(response.charAt(0) == 't')
                 return true;
 
@@ -54,6 +61,8 @@ public class StandardUserDao implements UserDAO{
 
     @Override
     public User getUser(String email, String password) {
+        password = hashPassword(password);
+
         String params = "email=" + email + "&password=" + password;
         byte[] paramData = params.getBytes(StandardCharsets.UTF_8);
         int paramLength = paramData.length;
@@ -63,6 +72,7 @@ public class StandardUserDao implements UserDAO{
             conn.setRequestProperty("Content-Length", Integer.toString(paramLength));
             DataOutputStream wr = new DataOutputStream( conn.getOutputStream());
             wr.write(paramData);
+            wr.close();
 
             String response = readResponse(conn);
             return parseResponse(response);
@@ -86,6 +96,8 @@ public class StandardUserDao implements UserDAO{
 
     @Override
     public boolean validateUser(String email, String password) {
+        password = hashPassword(password);
+
         String params = "email=" + email + "&password=" + password;
         byte[] paramData = params.getBytes(StandardCharsets.UTF_8);
         int paramLength = paramData.length;
@@ -95,22 +107,26 @@ public class StandardUserDao implements UserDAO{
             conn.setRequestProperty("Content-Length", Integer.toString(paramLength));
             DataOutputStream wr = new DataOutputStream( conn.getOutputStream());
             wr.write(paramData);
+            wr.close();
 
             String response = readResponse(conn);
+
             if(response.charAt(0) == 't')
                 return true;
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
+            //Log.e("validateSuccess", e.getMessage());
             return false;
         }
 
         return false;
     }
 
-
     @Override
     public boolean deleteUser(String email, String password) {
+        password = hashPassword(password);
+
         String params = "email=" + email + "&password=" + password;
         byte[] paramData = params.getBytes(StandardCharsets.UTF_8);
         int paramLength = paramData.length;
@@ -120,6 +136,7 @@ public class StandardUserDao implements UserDAO{
             conn.setRequestProperty("Content-Length", Integer.toString(paramLength));
             DataOutputStream wr = new DataOutputStream( conn.getOutputStream());
             wr.write(paramData);
+            wr.close();
 
             String response = readResponse(conn);
             if(response.charAt(0) == 't')
@@ -133,6 +150,9 @@ public class StandardUserDao implements UserDAO{
         return false;
     }
 
+    private String hashPassword(String unhashedPwd){
+        return new String(Hex.encodeHex(DigestUtils.sha1(unhashedPwd)));
+    }
     //Opens up a connection ready for a POST request
     private HttpURLConnection openWebServiceConnection(String url_path, String methodType) throws IOException {
         URL url = new URL(url_path);

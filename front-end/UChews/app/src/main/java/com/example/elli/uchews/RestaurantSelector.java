@@ -86,12 +86,12 @@ public class RestaurantSelector {
                 .sortDesc(FACTUAL_RATING_FIELD);
 
         String response = factual.fetch(FACTUAL_RESTAURANT_TABLE, query).getJson();
-        Log.e("response", response);
+
         try {
             selectedRestaurants = parseRestaurants(new JSONObject(response));
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e("jsonerror", e.toString());
+            //Log.e("jsonerror", e.toString());
         }
 
         return selectedRestaurants;
