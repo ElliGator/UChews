@@ -47,7 +47,6 @@ public abstract class AbstractWheelAdapter implements WheelViewAdapter {
             for (DataSetObserver observer : datasetObservers) {
                 observer.onChanged();
             }
-            Log.d("DEBUG ==>", "AbstractWheelAdapter notifying of data change");
         }
     }
 
