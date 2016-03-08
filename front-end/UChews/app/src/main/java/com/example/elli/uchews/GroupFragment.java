@@ -5,9 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +23,7 @@ import cw.wheel.widget.OnWheelChangedListener;
 import cw.wheel.widget.OnWheelScrollListener;
 import cw.wheel.widget.WheelView;
 
-// TODO: make sure images are added only once to wheel and pass weights to backend
-// TODO: make dialog popup after cuisine is selected and show available restaurants
+
 public class GroupFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private Button chews_btn;
@@ -53,11 +50,10 @@ public class GroupFragment extends Fragment {
         return fragment;
     }
 
-    /********************************************
-     ********************************************
-     *************LIFE CYCLE METHODS*************
-     ********************************************
-     ********************************************/
+    /**
+     ============================================
+     =============LIFE CYCLE METHODS=============
+     ============================================ **/
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,8 +74,7 @@ public class GroupFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        //Thread initializes wheel view
-        // TODO: Does this cause a memory leak?
+        //Async task initializes wheel view
         mTask = new InitWheelTask();
         mTask.execute(R.id.slot_1);
 
@@ -91,16 +86,12 @@ public class GroupFragment extends Fragment {
 
                 mSpinTask = new SpinWheelTask();
                 mSpinTask.execute();
-
-                //TODO: will return arraylist of restaurants to display
-                //mRestaurants = mSelector.groupSelect(mCuisine_weights, mUser.getLocality(), FactualRegion.FLORIDA);
             }
         });
         chews_btn.setEnabled(false);
+
         //Supported cuisines
         cuisineList = (LinearLayout) getActivity().findViewById(R.id.cuisine_list);
-
-        //updateStatus();
         loadCuisines();
     }
 
@@ -123,11 +114,10 @@ public class GroupFragment extends Fragment {
         mSpinTask.cancel(true);
     }
 
-    /********************************************
-     ********************************************
-     *****************LISTENERS******************
-     ********************************************
-     ********************************************/
+    /**
+     ============================================
+     =================LISTENERS==================
+     ============================================ **/
 
     /**
      * This interface must be implemented by activities that contain this
@@ -146,25 +136,28 @@ public class GroupFragment extends Fragment {
         }
         public void onScrollingFinished(WheelView wheel) {
             wheelScrolled = false;
-            updateStatus();
+            //no need of updating status
         }
     };
 
     // Wheel changed listener
     private OnWheelChangedListener changedListener = new OnWheelChangedListener() {
         public void onChanged(WheelView wheel, int oldValue, int newValue) {
-            if (!wheelScrolled) {
-                updateStatus();
-            }
+            /*if (!wheelScrolled) {
+                no need of updating status
+            }*/
         }
     };
 
 
-    /********************************************
-     ********************************************
-     ***********CUISINE LIST METHODS*************
-     ********************************************
-     ********************************************/
+    /**
+     ============================================
+     ===========CUISINE LIST METHODS=============
+     ============================================ **/
+
+    /**
+     * Loads supported Cuisines into group tab
+     */
     private void loadCuisines(){
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v;
@@ -195,7 +188,6 @@ public class GroupFragment extends Fragment {
      */
     private void addCuisine(String text) {
         for(Cuisine c: Cuisine.values()){
-            Log.d("DEBUG ==>", "PRE - checking setInWheel value " + c.getName()+ " " + c.isInWheel());
             if(c.getName().equals(text) && !c.isInWheel()) {
                 slotMachineAdapter.addImage(c.getImage());
 
@@ -203,7 +195,6 @@ public class GroupFragment extends Fragment {
                 addCuisineWeight(c);
                 //cuisine has been added to wheel
                 c.setInWheel(true);
-                Log.d("DEBUG ==>", "POST - checking setInWheel value " + c.getName()+ " " + c.isInWheel());
                 break;
             }
             else if(c.getName().equals(text) && c.isInWheel()){
@@ -231,11 +222,10 @@ public class GroupFragment extends Fragment {
         }
     }
 
-    /********************************************
-     ********************************************
-     ************WHEELVIEW METHODS***************
-     ********************************************
-     ********************************************/
+    /**
+     ============================================
+     =============WHEELVIEW METHODS==============
+     ============================================ **/
 
     /**
      * Initializes wheel
@@ -268,62 +258,51 @@ public class GroupFragment extends Fragment {
     private void mixWheel(int id) {
         WheelView wheel = getWheel(id);
         wheel.scroll(-350 + (int) (Math.random() * 50), 2000);
-
-        //Cuisine chosen = mSelector.weightedSelect(mCuisine_weights);
-        //wheel.setCurrentItem(getIndexOfCuisine(chosen));
     }
 
     /**
-     * Tests wheels
-     * @return true
-     */
-    private boolean test() {
-        int value = getWheel(R.id.slot_1).getCurrentItem();
-        return true;//testWheelValue(R.id.slot_2, value) && testWheelValue(R.id.slot_3, value);
-    }
+     ============================================
+     ==============HELPER METHODS================
+     ============================================ **/
 
     /**
-     * Tests wheel value
-     * @param id the wheel Id
-     * @param value the value to test
-     * @return true if wheel value is equal to passed value
+     * Gets index of the Cuisine to set current item in wheel
+     * @param c Cuisine that was selected by weight
+     * @return the index of the Cuisine
      */
-    private boolean testWheelValue(int id, int value) {
-        return getWheel(id).getCurrentItem() == value;
-    }
-
-    /**
-     * Updates status
-     */
-    private void updateStatus() {
-        //called test
-    }
-
-    /********************************************
-     ********************************************
-     **************HELPER METHODS****************
-     ********************************************
-     ********************************************/
     private int getIndexOfCuisine(Cuisine c) {
+        /*WheelView wheel = getWheel(R.id.slot_1);
+        int currentItem = wheel.getCurrentItem();
+        if(currentItem == c.getImage()) {
+            return
+        }*/
         int i;
         for(i = 0; i < indexes.length; i++) {
-            if(indexes[i].equals(c))
+            Log.d("DEBUG ==>", "Current cuisine in array" + indexes[i].getName());
+            Log.d("DEBUG ==>", "Passed in cuisine" + c.getName());
+            if(indexes[i].equals(c)) {
                 Log.d("DEBUG ==>", "index being returned is " + i);
-                return i+1;
+                return i;
+            }
         }
 
+        Log.d("DEBUG ==>", "outside loop normal return is " + i);
         return i;
     }
 
+    /**
+     * Increments the global index for inserting and
+     * tracking the index of Cuisines in the wheel
+     */
     private void incrementGlobalIndex() {
         global_index++;
+        Log.d("DEBUG ==>", "The global index is " + global_index);
     }
 
-    /********************************************
-     ********************************************
-     ***********SLOT MACHINE ADAPTER*************
-     ********************************************
-     ********************************************/
+    /**
+     ============================================
+     ===========SLOT MACHINE ADAPTER=============
+     ============================================ **/
     private class SlotMachineAdapter extends AbstractWheelAdapter {
         // Image size
         final int IMAGE_WIDTH = 700;
@@ -395,11 +374,10 @@ public class GroupFragment extends Fragment {
         }
     }
 
-    /********************************************
-     ********************************************
-     *************ASYNCHRONOUS TASKS*************
-     ********************************************
-     ********************************************/
+    /**
+     ============================================
+     =============ASYNCHRONOUS TASKS=============
+     ============================================ **/
 
     private class InitWheelTask extends AsyncTask<Integer, Void, Void> {
 
@@ -411,27 +389,32 @@ public class GroupFragment extends Fragment {
     }
 
     private class SpinWheelTask extends AsyncTask<Void, Integer, Cuisine> {
+        //TODO: BUG - cuisine being selected does not always match restaurants
         WheelView wheel = getWheel(R.id.slot_1);
         RestaurantSelector mSelector = new RestaurantSelector();
 
         @Override
         protected Cuisine doInBackground(Void... v) {
+            /*
+                Need to make sure cuisine it lands on matches selected weight
+             */
             Cuisine chosen = mSelector.weightedSelect(mCuisine_weights);
-            mRestaurants = mSelector.groupSelect(mCuisine_weights, FactualLocality.GAINESVILLE, FactualRegion.FLORIDA);
-            Log.d("DEBUG ==>", "Size of restaurants arraylist" + mRestaurants.size());
+            mRestaurants = mSelector.groupSelect(chosen, FactualLocality.GAINESVILLE, FactualRegion.FLORIDA);
             return chosen;
         }
 
         @Override
         protected void onPostExecute(Cuisine c) {
             restaurantDialog = new RestaurantDialog();
-            if(wheel != null) {
-                Log.d("DEBUG ==>", "Index of " + c.getName() + " is " + getIndexOfCuisine(c));
-                wheel.setCurrentItem(getIndexOfCuisine(c));
-                //Dialog
-                restaurantDialog = RestaurantDialog.newInstance(c.getName() + "Restaurants", mRestaurants);
-                restaurantDialog.show(getFragmentManager(), c.getName() + "Restaurants");
-            }
+            restaurantDialog.setTitle(c.getName() + " Restaurants");
+            restaurantDialog.setRestaurantList(mRestaurants);
+
+            //TODO: Wheel not always landing on selected weighted cuisine
+            //Wheel index may start at 1
+            int temp = getIndexOfCuisine(c) + 2;
+            wheel.setCurrentItem(temp, false);
+            //Dialog
+            restaurantDialog.show(getFragmentManager(), "dialog");
         }
     }
 }
