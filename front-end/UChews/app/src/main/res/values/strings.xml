@@ -8,7 +8,7 @@
     <string name="cuisine_placeholder">Cuisine Type</string>
     <string name="chews_btn">Chews</string>
     <string name="yes_btn">Yes!</string>
-    <string name="works_btn">That Works</string>
+    <string name="pass_btn">Not Today</string>
     <string name="no_btn">No Thanks</string>
     <string name="history">History</string>
     <string name="restaurant_name">Name</string>
