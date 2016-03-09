@@ -9,8 +9,8 @@
 	$fname = $_REQUEST['fname'];
 	$lname = $_REQUEST['lname'];
 	$locality = $_REQUEST['locality'];
-	//$cuisines = $_GET['cuisines'];
-	$cuisines = '{"312":"1"}';
+	$cuisines = $_REQUEST['cuisines'];
+	//$cuisines = '{"312":"1"}';
 
 	//Handle DB credentials
 	$creds = file_get_contents("/cise/homes/cwhitten/UChews/back-end/credentials.json");
