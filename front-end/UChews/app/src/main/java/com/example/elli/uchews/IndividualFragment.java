@@ -1,5 +1,7 @@
 package com.example.elli.uchews;
 
+import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 
@@ -17,7 +21,8 @@ import android.widget.ViewFlipper;
 public class IndividualFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
-    private Button chews_btn;
+    private TextView mCenterPlate;
+    private Button notoday_btn;
     private Button works_btn;
     private Button nah_btn;
 
@@ -37,9 +42,6 @@ public class IndividualFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        chews_btn = (Button) getActivity().findViewById(R.id.chews_btn);
-        works_btn = (Button) getActivity().findViewById(R.id.no_btn);
-        nah_btn = (Button) getActivity().findViewById(R.id.yes_btn);
     }
 
     @Override
@@ -52,13 +54,16 @@ public class IndividualFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-    }
+        notoday_btn = (Button) getActivity().findViewById(R.id.notToday_btn);
+        notoday_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animatePlate();
+            }
+        });
+        works_btn = (Button) getActivity().findViewById(R.id.no_btn);
+        nah_btn = (Button) getActivity().findViewById(R.id.yes_btn);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(int position) {
-        if (mListener != null) {
-            mListener.onIndividualFragmentInteraction(position);
-        }
     }
 
     @Override
@@ -90,5 +95,18 @@ public class IndividualFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onIndividualFragmentInteraction(int position);
+    }
+
+    /**
+     * Animates plate when user wants another suggestion
+     */
+    private void animatePlate() {
+        mCenterPlate = (TextView) getActivity().findViewById(R.id.rest_plate);
+
+        ObjectAnimator animation = ObjectAnimator.ofFloat(mCenterPlate, "rotationY", 0.0f, 360f);
+        animation.setDuration(3000);
+        //animation.setRepeatCount(ObjectAnimator.INFINITE);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.start();
     }
 }
