@@ -23,8 +23,8 @@ public class IndividualFragment extends Fragment {
 
     private TextView mCenterPlate;
     private Button notoday_btn;
-    private Button works_btn;
-    private Button nah_btn;
+    private Button yes_btn;
+    private Button no_btn;
 
 
     public IndividualFragment() {
@@ -54,6 +54,15 @@ public class IndividualFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
+        //"No" button
+        no_btn = (Button) getActivity().findViewById(R.id.no_btn);
+        no_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animatePlate();
+            }
+        });
+        //"Not Today" button
         notoday_btn = (Button) getActivity().findViewById(R.id.notToday_btn);
         notoday_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,8 +70,8 @@ public class IndividualFragment extends Fragment {
                 animatePlate();
             }
         });
-        works_btn = (Button) getActivity().findViewById(R.id.no_btn);
-        nah_btn = (Button) getActivity().findViewById(R.id.yes_btn);
+        //"Yes" button
+        yes_btn = (Button) getActivity().findViewById(R.id.yes_btn);
 
     }
 

@@ -4,21 +4,21 @@ package com.example.elli.uchews;
  * Created by Chris on 2/18/2016.
  */
 public enum Cuisine {
-    AMERICAN (348, "American", R.mipmap.ic_bbq, false),
+    AMERICAN (348, "American", R.mipmap.ic_american, false),
     BBQ (349, "BBQ", R.mipmap.ic_bbq, false),
     BURGERS (351, "Burgers", R.mipmap.ic_bbq, false),
     CHINESE (352, "Chinese", R.mipmap.ic_chinese, false),
-    FRENCH (356, "French", R.mipmap.ic_chinese, false),
+    FRENCH (356, "French", R.mipmap.ic_french, false),
     INDIAN (357, "Indian", R.mipmap.ic_chinese, false),
     ITALIAN (358, "Italian", R.mipmap.ic_italian, false),
-    JAPANESE (359, "Japanese", R.mipmap.ic_pizza, false),
+    JAPANESE (359, "Japanese", R.mipmap.ic_japanese, false),
     KOREAN (360, "Korean", R.mipmap.ic_pizza, false),
     MEXICAN (361,"Mexican", R.mipmap.ic_mexican, false),
-    MIDDLE_EASTERN (362, "Middle Eastern", R.mipmap.ic_pizza, false),
+    MIDDLE_EASTERN (362, "Middle Eastern", R.mipmap.ic_middle_eastern, false),
     PIZZA (363, "Pizza", R.mipmap.ic_pizza, false),
     SEAFOOD (364, "Seafood", R.mipmap.ic_seafood, false),
     SUSHI (366, "Sushi", R.mipmap.ic_sushi, false),
-    THAI (367, "Thai", R.mipmap.ic_chinese, false),
+    THAI (367, "Thai", R.mipmap.ic_thai, false),
     VEGETARIAN (368,"Vegetarian", R.mipmap.ic_bbq, false),
 
 
