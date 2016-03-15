@@ -33,8 +33,11 @@ public class StandardUserDao implements UserDAO{
     private String GET_USER_PATH = "get_user.php";
     private String LOG_HISTORY_PATH = "log_history.php";
 
+    private int DEFAULT_PRIMARY_CUISINE_WEIGHT = 10;
+    private int DEFAULT_SECONDARY_CUISINE_WEIGHT = 5;
+
     @Override
-    public boolean addUser(String email, String password, String fname, String lname, FactualLocality locality, JSONObject cuisine_stats) {
+    public boolean addUser(String email, String password, String fname, String lname, FactualLocality locality) {
         password = hashPassword(password);
         String params = "email=" + email + "&password=" + password
                 + "&fname=" + fname
@@ -53,6 +56,53 @@ public class StandardUserDao implements UserDAO{
         }
 
         return false;
+    }
+
+    public boolean addUser(String email, String password, String fname, String lname, FactualLocality locality, Cuisine primaryC, Cuisine secondaryC) {
+        password = hashPassword(password);
+        String params = "email=" + email + "&password=" + password
+                + "&fname=" + fname
+                + "&lname=" + lname
+                + "&locality=" + locality.getName();
+
+        //Attempt to create string param for cuisine stats
+        String cuisineParams = "{}";
+        try {
+            cuisineParams = getBasicCuisineStatsParams(primaryC, secondaryC);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            cuisineParams = "{}";
+        }
+
+        params = params + "&cuisines=" + cuisineParams;
+
+        try {
+            HttpURLConnection conn = openWebServiceConnection(BASE_WEBSERVICE_URL + ADD_USER_PATH, "POST", params);
+            String response = readResponse(conn);
+
+            if(response.charAt(0) == 't')
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return false;
+    }
+
+    /**
+     * Takes in a users primary and secondary cuisine favorites and creates a string representation
+     * of a JSON object containing the cuisines and some default weights.
+     * @param primaryC
+     * @param secondaryC
+     * @return
+     */
+    private String getBasicCuisineStatsParams(Cuisine primaryC, Cuisine secondaryC) throws JSONException {
+        JSONObject o = new JSONObject();
+        o.put(Integer.toString(primaryC.getFactual_id()), DEFAULT_PRIMARY_CUISINE_WEIGHT);
+        o.put(Integer.toString(secondaryC.getFactual_id()), DEFAULT_SECONDARY_CUISINE_WEIGHT);
+
+        return o.toString();
     }
 
     @Override
@@ -143,6 +193,9 @@ public class StandardUserDao implements UserDAO{
 
         return false;
     }
+
+
+
 
 
 

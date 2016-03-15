@@ -15,10 +15,9 @@ public interface UserDAO {
      * @param fname First name
      * @param lname Last name
      * @param locality A supported FactualLocality
-     * @param cuisine_stats A JSON object with (cuisine_id, int) pairs. The integer is the weight.
      * @return true if the user was added successfully. False otherwise.
      */
-    public boolean addUser(String email, String password, String fname, String lname, FactualLocality locality, JSONObject cuisine_stats);
+    public boolean addUser(String email, String password, String fname, String lname, FactualLocality locality);
 
     /**
      * Lookup a user's information
