@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by Chris on 2/29/2016.
@@ -39,14 +40,17 @@ public class StandardUserDao implements UserDAO{
     @Override
     public boolean addUser(String email, String password, String fname, String lname, FactualLocality locality) {
         password = hashPassword(password);
-        String params = "email=" + email + "&password=" + password
-                + "&fname=" + fname
-                + "&lname=" + lname
-                + "&locality=" + locality.getName();
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("fname", fname);
+        params.put("lname", lname);
+        params.put("locality", locality.getName());
 
         try {
-            HttpURLConnection conn = openWebServiceConnection(BASE_WEBSERVICE_URL + ADD_USER_PATH, "POST", params);
-            String response = readResponse(conn);
+            HttpURLConnection conn = WebServiceConnector.openWebServiceConnection(BASE_WEBSERVICE_URL + ADD_USER_PATH, WebServiceConnector.Method.POST, params);
+            String response = WebServiceConnector.readResponse(conn);
 
             if(response.charAt(0) == 't')
                 return true;
@@ -60,10 +64,13 @@ public class StandardUserDao implements UserDAO{
 
     public boolean addUser(String email, String password, String fname, String lname, FactualLocality locality, Cuisine primaryC, Cuisine secondaryC) {
         password = hashPassword(password);
-        String params = "email=" + email + "&password=" + password
-                + "&fname=" + fname
-                + "&lname=" + lname
-                + "&locality=" + locality.getName();
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("fname", fname);
+        params.put("lname", lname);
+        params.put("locality", locality.getName());
 
         //Attempt to create string param for cuisine stats
         String cuisineParams = "{}";
@@ -74,11 +81,11 @@ public class StandardUserDao implements UserDAO{
             cuisineParams = "{}";
         }
 
-        params = params + "&cuisines=" + cuisineParams;
+        params.put("cuisines", cuisineParams);
 
         try {
-            HttpURLConnection conn = openWebServiceConnection(BASE_WEBSERVICE_URL + ADD_USER_PATH, "POST", params);
-            String response = readResponse(conn);
+            HttpURLConnection conn = WebServiceConnector.openWebServiceConnection(BASE_WEBSERVICE_URL + ADD_USER_PATH, WebServiceConnector.Method.POST, params);
+            String response = WebServiceConnector.readResponse(conn);
 
             if(response.charAt(0) == 't')
                 return true;
@@ -108,12 +115,14 @@ public class StandardUserDao implements UserDAO{
     @Override
     public User getUser(String email, String password) {
         password = hashPassword(password);
-        String params = "email=" + email + "&password=" + password;
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("email", email);
+        params.put("password", password);
 
         try {
-            HttpURLConnection conn = openWebServiceConnection(BASE_WEBSERVICE_URL + GET_USER_PATH, "POST", params);
+            HttpURLConnection conn = WebServiceConnector.openWebServiceConnection(BASE_WEBSERVICE_URL + GET_USER_PATH, WebServiceConnector.Method.POST, params);
 
-            String response = readResponse(conn);
+            String response = WebServiceConnector.readResponse(conn);
             return parseResponse(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,11 +144,13 @@ public class StandardUserDao implements UserDAO{
     @Override
     public boolean validateUser(String email, String password) {
         password = hashPassword(password);
-        String params = "email=" + email + "&password=" + password;
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("email", email);
+        params.put("password", password);
 
         try {
-            HttpURLConnection conn = openWebServiceConnection(BASE_WEBSERVICE_URL + VALIDATE_USER_PATH, "POST", params);
-            String response = readResponse(conn);
+            HttpURLConnection conn = WebServiceConnector.openWebServiceConnection(BASE_WEBSERVICE_URL + VALIDATE_USER_PATH, WebServiceConnector.Method.POST, params);
+            String response = WebServiceConnector.readResponse(conn);
 
             if(response.charAt(0) == 't')
                 return true;
@@ -156,12 +167,14 @@ public class StandardUserDao implements UserDAO{
     @Override
     public boolean deleteUser(String email, String password) {
         password = hashPassword(password);
-        String params = "email=" + email + "&password=" + password;
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("email", email);
+        params.put("password", password);
 
         try {
-            HttpURLConnection conn = openWebServiceConnection(BASE_WEBSERVICE_URL + DELETE_USER_PATH, "POST", params);
+            HttpURLConnection conn = WebServiceConnector.openWebServiceConnection(BASE_WEBSERVICE_URL + DELETE_USER_PATH, WebServiceConnector.Method.POST, params);
 
-            String response = readResponse(conn);
+            String response = WebServiceConnector.readResponse(conn);
             if(response.charAt(0) == 't')
                 return true;
         } catch (Exception e) {
@@ -176,14 +189,17 @@ public class StandardUserDao implements UserDAO{
     public boolean logHistory(String email, String rest_id, Rating rating) {
         Date currTime = Calendar.getInstance().getTime();
         String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(currTime);
-        String params = "email=" + email + "&rest_id=" + rest_id
-                + "&rating=" + Integer.toString(rating.getMagnitude())
-                + "&timestamp=" + timestamp;
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("email", email);
+        params.put("rest_id", rest_id);
+        params.put("rating", Integer.toString(rating.getMagnitude()));
+        params.put("timestamp", timestamp);
 
         try {
-            HttpURLConnection conn = openWebServiceConnection(BASE_WEBSERVICE_URL + LOG_HISTORY_PATH, "POST", params);
+            HttpURLConnection conn = WebServiceConnector.openWebServiceConnection(BASE_WEBSERVICE_URL + LOG_HISTORY_PATH, WebServiceConnector.Method.POST, params);
 
-            String response = readResponse(conn);
+            String response = WebServiceConnector.readResponse(conn);
             if (response.charAt(0) == 't')
                 return true;
         } catch (Exception e) {
@@ -195,46 +211,8 @@ public class StandardUserDao implements UserDAO{
     }
 
 
-
-
-
-
     //Helper Methods//
     private String hashPassword(String unhashedPwd){
         return new String(Hex.encodeHex(DigestUtils.sha1(unhashedPwd)));
-    }
-
-    //Opens up a connection ready for a POST request and writes params
-    private HttpURLConnection openWebServiceConnection(String url_path, String methodType, String params) throws IOException {
-        URL url = new URL(url_path);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setDoOutput(true);
-        conn.setRequestMethod(methodType);
-        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        conn.setRequestProperty("charset", "utf-8");
-
-        //Write params
-        byte[] paramData = params.getBytes(StandardCharsets.UTF_8);
-        int paramLength = paramData.length;
-        conn.setRequestProperty("Content-Length", Integer.toString(paramLength));
-        DataOutputStream wr = new DataOutputStream( conn.getOutputStream());
-        wr.write(paramData);
-        wr.close();
-
-        return conn;
-    }
-
-    private String readResponse(HttpURLConnection conn) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String response ="";
-        String line ="";
-        while((line = reader.readLine()) != null)
-        {
-            response = response.concat(line + "\n");
-        }
-
-        reader.close();
-
-        return response;
     }
 }
