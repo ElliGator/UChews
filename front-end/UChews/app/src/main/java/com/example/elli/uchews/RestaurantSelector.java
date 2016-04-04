@@ -4,9 +4,15 @@ import android.util.Log;
 
 import com.factual.driver.Factual;
 import com.factual.driver.Query;
+
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,6 +42,8 @@ public class RestaurantSelector {
     private String FACTUAL_ADDRESS_FIELD = "address";
     private String FACTUAL_HOURS_FIELD = "hours";
     private String FACTUAL_WEBSITE_FIELD = "name";
+    private String BASE_WEBSERVICE_URL = "https://www.cise.ufl.edu/~cwhitten/UChews/";
+    private String INDIVIDUAL_SELECT_PATH = "individual_select.php";
     private int queryLimit = 50;
 
     /**
@@ -71,7 +79,7 @@ public class RestaurantSelector {
         return selectedRestaurants;
     }
 
-    public ArrayList<Restaurant> groupSelect(Cuisine cSelection,FactualLocality locality, FactualRegion region ){
+    public ArrayList<Restaurant> restaurantSelect(Cuisine cSelection, FactualLocality locality, FactualRegion region){
         ArrayList<Restaurant> selectedRestaurants = new ArrayList<Restaurant>();
 
         //Perform factual connection
@@ -92,6 +100,46 @@ public class RestaurantSelector {
         } catch (JSONException e) {
             e.printStackTrace();
             //Log.e("jsonerror", e.toString());
+        }
+
+        return selectedRestaurants;
+    }
+
+    public ArrayList<Restaurant> individualSelect(User user){
+        ArrayList<Restaurant> selectedRestaurants = new ArrayList<Restaurant>();
+
+        //Connect to individual select webservice
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("email", user.getEmail());
+        params.put("password", hashPassword(user.getPassword()));
+
+        String response = "";
+        try {
+            HttpURLConnection conn = WebServiceConnector.openWebServiceConnection(BASE_WEBSERVICE_URL + INDIVIDUAL_SELECT_PATH,
+                    WebServiceConnector.Method.POST, params);
+            response = WebServiceConnector.readResponse(conn);
+            JSONObject jsonResp = new JSONObject(response);
+            boolean userInColdStart = jsonResp.getBoolean("isInColdStart");
+
+            if(userInColdStart){
+                //Response contains cuisine ids
+                JSONObject userCuisineStats = jsonResp.getJSONObject("userCuisines");
+                HashMap<Cuisine, Integer> userWeights = parseUserCuisineStats(userCuisineStats);
+                Cuisine c = weightedSelect(userWeights);
+
+                //TODO: Update once user has a region field
+                selectedRestaurants = restaurantSelect(c, user.getLocality(), FactualRegion.FLORIDA);
+            }
+            else{
+                //Response contains restaurant ids
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            //Log.d("Selection error", "Could not connect to individual selection webservice");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //Log.d("Selection error", "Failed to parse individual selection response");
         }
 
         return selectedRestaurants;
@@ -185,6 +233,28 @@ public class RestaurantSelector {
         }
 
         return restaurants;
+    }
+
+    private HashMap<Cuisine, Integer> parseUserCuisineStats(JSONObject userStats) throws JSONException {
+        HashMap<Cuisine, Integer> userWeights = new HashMap<Cuisine, Integer>();
+        Iterator<String> keys = userStats.keys();
+
+        while(keys.hasNext()){
+            String key = keys.next();
+            String value = userStats.getString(key);
+
+            Cuisine c = Cuisine.getCuisineById(Integer.valueOf(key));
+            int weight = Integer.valueOf(value);
+
+            userWeights.put(c, weight);
+        }
+
+        return userWeights;
+    }
+
+    //Helper Methods//
+    private String hashPassword(String unhashedPwd){
+        return new String(Hex.encodeHex(DigestUtils.sha1(unhashedPwd)));
     }
 
 }

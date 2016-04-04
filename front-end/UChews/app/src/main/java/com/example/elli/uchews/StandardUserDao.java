@@ -1,21 +1,12 @@
 package com.example.elli.uchews;
 
-import android.util.Log;
-
 import org.apache.commons.codec.binary.Hex;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +15,7 @@ import java.util.HashMap;
 /**
  * Created by Chris on 2/29/2016.
  * Default UserDao that should be used for user CRUD operations
+ * Note: This class's methods will hash all passwords it takes as input
  */
 public class StandardUserDao implements UserDAO{
 
@@ -114,23 +106,23 @@ public class StandardUserDao implements UserDAO{
 
     @Override
     public User getUser(String email, String password) {
-        password = hashPassword(password);
+        String hashedPassword = hashPassword(password);
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("email", email);
-        params.put("password", password);
+        params.put("password", hashedPassword);
 
         try {
             HttpURLConnection conn = WebServiceConnector.openWebServiceConnection(BASE_WEBSERVICE_URL + GET_USER_PATH, WebServiceConnector.Method.POST, params);
 
             String response = WebServiceConnector.readResponse(conn);
-            return parseResponse(response);
+            return parseResponse(response, password);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private User parseResponse(String response) throws JSONException {
+    private User parseResponse(String response, String password) throws JSONException {
         JSONObject resp = new JSONObject(response);
         String email = resp.getString("email");
         String fname = resp.getString("fname");
@@ -138,7 +130,7 @@ public class StandardUserDao implements UserDAO{
         FactualLocality locality = FactualLocality.getLocalityByName(resp.getString("lname"));
         JSONObject cuisines = resp.getJSONObject("cuisine_stats");
 
-        return new User(email, fname, lname, locality, cuisines);
+        return new User(email, password , fname, lname, locality, cuisines);
     }
 
     @Override

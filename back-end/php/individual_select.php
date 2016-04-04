@@ -30,7 +30,7 @@
 		$result = pg_prepare($conn, 'cuisines', $sql);
 		$result = pg_execute($conn, 'cuisines', array($email, $pwd));
 		$row = pg_fetch_row($result);
-		$user_cuisines = $row[0];
+		$user_cuisines = json_decode($row[0]);
 
 		$response = array("isInColdStart" => "true", "userCuisines" => $user_cuisines);
 		$response = stripslashes(json_encode($response));

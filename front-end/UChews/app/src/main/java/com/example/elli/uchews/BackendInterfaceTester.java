@@ -8,6 +8,21 @@ import android.util.Log;
  */
 public class BackendInterfaceTester {
 
+    public void testIndividualSelect(){
+        new AsyncTask<Void, Void, Integer>(){
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+                User user = new User("testUser", "2f61f9b9822dd99b61efc4e22b3d6754edc0defa", "Daquan", "FromDaTrap", FactualLocality.GAINESVILLE, null);
+                return new RestaurantSelector().individualSelect(user).size();
+            }
+
+            @Override
+            protected void onPostExecute(Integer b) {
+                Log.d("Backend Test", "IndividualSelect() response: " + b.toString());
+            }
+        }.execute();
+    }
     public void testAddUser(){
         new AsyncTask<Void, Void, Boolean>(){
 
