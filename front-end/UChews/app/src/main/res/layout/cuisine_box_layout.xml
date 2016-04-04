@@ -1,17 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<!--<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content">
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
 
-    android:id="@+id/box"
-    android:layout_width="85dp"
-    android:layout_height="60dp"
-    android:layout_margin="5dp"
+        android:id="@+id/box"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_margin="5dp"
 
-    android:text="Template"
-    android:gravity="center"
-    android:textColor="@color/textColorPrimary"
-    android:background="@color/colorPrimary"
-    android:onClick="addCuisine">
+        android:text="Template"
+        android:gravity="center"
+        android:textColor="@color/navigationBarColor"
+        android:background="@drawable/circle"
+        android:onClick="addCuisine">
+    </TextView>
 
-</TextView>
+    <TextView
+        android:id="@+id/count"
+        android:layout_width="43dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+
+        android:text="10"
+        android:background="@drawable/count_circle"
+        android:gravity="center"
+        android:textColor="@color/textColorPrimary"
+        android:layout_alignBottom="@+id/box"
+        android:layout_alignEnd="@+id/box" />
+
+    <TextView
+        android:id="@+id/decrement"
+        android:layout_width="43dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+
+        android:text="-"
+        android:gravity="center"
+        android:textColor="@color/textColorPrimary"
+        android:background="@drawable/decrement_circle"
+        android:layout_alignTop="@+id/count"
+        android:layout_alignStart="@+id/box"/>
+</RelativeLayout>-->
+
+
+
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+
+        android:id="@+id/box"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_margin="5dp"
+
+        android:text="Template"
+        android:gravity="center"
+        android:textColor="@color/navigationBarColor"
+        android:background="@drawable/circle"
+        android:onClick="addCuisine">
+    </TextView>
+
+        <!--<TextView
+            android:id="@+id/count"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+
+            android:text="10"
+            android:background="@drawable/count_circle"
+            android:layout_gravity="end|bottom"
+            android:gravity="center"
+            android:textColor="@color/textColorPrimary" />
+
+        <TextView
+            android:id="@+id/decrement"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+
+            android:text="-"
+            android:gravity="center"
+            android:layout_gravity="start|bottom"
+            android:textColor="@color/textColorPrimary"
+            android:background="@drawable/decrement_circle" />-->
+
+

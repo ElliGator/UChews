@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/cuisine_pref"
+        android:layout_above="@+id/gridLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp" />
+
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:rowCount="6"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <CheckBox
+            android:id="@+id/american_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/american_text"
+            android:layout_column="0"
+            android:layout_row="0"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+        <CheckBox
+            android:id="@+id/bbq_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bbq_text"
+            android:layout_column="1"
+            android:layout_row="0"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+        <CheckBox
+            android:id="@+id/burger_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/burgers_text"
+            android:layout_column="2"
+            android:layout_row="0"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+        <CheckBox
+            android:id="@+id/chinese_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chinese_text"
+            android:layout_column="0"
+            android:layout_row="1"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/french_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/french_text"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/indian_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/indian_text"
+            android:layout_row="1"
+            android:layout_column="2"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/italian_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/italian_text"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/japan_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/japanese_text"
+            android:layout_row="2"
+            android:layout_column="1"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/korean_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/korean_text"
+            android:layout_row="2"
+            android:layout_column="2"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/mexican_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mexican_text"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/mideast_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mideast_text"
+            android:layout_row="3"
+            android:layout_column="1"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/pizza_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pizza_text"
+            android:layout_row="3"
+            android:layout_column="2"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/cfood_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/seafood_text"
+            android:layout_row="4"
+            android:layout_column="0"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/sushi_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sushi_text"
+            android:layout_row="4"
+            android:layout_column="1"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/thai_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/thai_text"
+            android:layout_row="4"
+            android:layout_column="2"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+        <CheckBox
+            android:id="@+id/vege_box"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/vege_text"
+            android:layout_row="5"
+            android:layout_column="1"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp" />
+
+    </GridLayout>
+
+    <Button
+        android:id="@+id/submit_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="29dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/button"
+        android:text="@string/submit_btn"
+        android:textColor="@color/textColorPrimary"/>
+</RelativeLayout>

@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import cw.wheel.widget.OnWheelScrollListener;
 import cw.wheel.widget.WheelView;
 
 
-public class GroupFragment extends Fragment {
+public class GroupFragment extends Fragment implements EditCuisineDialog.DialogDataInterface {
     private OnFragmentInteractionListener mListener;
     private Button chews_btn;
     private LinearLayout cuisineList;
@@ -38,6 +39,8 @@ public class GroupFragment extends Fragment {
     private InitWheelTask mTask;
     private SpinWheelTask mSpinTask;
     private RestaurantDialog restaurantDialog;
+    private EditCuisineDialog editDialog;
+    private int mFragId;
 
 
     public GroupFragment() {
@@ -66,6 +69,7 @@ public class GroupFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mFragId = this.getId();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_group, container, false);
     }
@@ -158,6 +162,7 @@ public class GroupFragment extends Fragment {
     /**
      * Loads supported Cuisines into group tab
      */
+    //TODO: find out how to dynamically add nested views into linear layout
     private void loadCuisines(){
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v;
@@ -166,17 +171,47 @@ public class GroupFragment extends Fragment {
         for(Cuisine c : Cuisine.values()){
             v = inflater.inflate(R.layout.cuisine_box_layout, cuisineList, false);
             TextView cuisine = (TextView) v.findViewById(R.id.box);
+            //TextView decrement = (TextView) v.findViewById(R.id.decrement);
+            //TextView display_weight = (TextView) v.findViewById(R.id.count);
 
             cuisine.setText(c.getName());
-            cuisine.setOnClickListener(new View.OnClickListener(){
+            cuisine.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v){
+                public void onClick(View v) {
                     chews_btn.setEnabled(true);
                     TextView tv = (TextView) v;
                     String sel_cuisine = tv.getText().toString();
                     addCuisine(sel_cuisine);
                 }
             });
+            cuisine.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    TextView v = (TextView) view;
+                    String c = v.getText().toString();
+
+                    Cuisine f = Cuisine.getCuisine(c);
+                    if (mCuisine_weights.containsKey(f)) {
+                        int fWeight = mCuisine_weights.get(f);
+                        editDialog = EditCuisineDialog.newInstance(c, fWeight);
+                        editDialog.setTargetFragment(getFragmentManager().findFragmentById(mFragId), 0);
+                        editDialog.setTitle("Edit " + c);
+                        editDialog.show(getFragmentManager(), "display");
+                    } else {
+                        return false;
+                    }
+
+                    return true;
+                }
+            });
+
+            /*decrement.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: find a way to get cuisine and decrement its weight
+                }
+            });*/
+
 
             cuisineList.addView(cuisine);
         }
@@ -186,7 +221,7 @@ public class GroupFragment extends Fragment {
      * Adds selected cuisine to wheel
      * @param text selected cuisine String (text)
      */
-    private void addCuisine(String text) {
+    public void addCuisine(String text) {
         for(Cuisine c: Cuisine.values()){
             if(c.getName().equals(text) && !c.isInWheel()) {
                 slotMachineAdapter.addImage(c.getImage());
@@ -219,6 +254,18 @@ public class GroupFragment extends Fragment {
             int curr_weight = mCuisine_weights.get(c);
             curr_weight = curr_weight + 1;
             mCuisine_weights.put(c, curr_weight);
+        }
+    }
+
+    @Override
+    public void editCuisineWeight(Cuisine c, int newWeight) {
+        if(mCuisine_weights.containsKey(c)) {
+            mCuisine_weights.put(c, newWeight);
+        }
+        else {
+            Toast msg = Toast.makeText(getContext(), "Cuisine has not been added",
+                    Toast.LENGTH_LONG);
+            msg.show();
         }
     }
 
