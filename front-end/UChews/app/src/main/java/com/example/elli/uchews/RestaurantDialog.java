@@ -8,26 +8,16 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
  * Created by Elli on 2/29/2016.
  */
 public class RestaurantDialog extends DialogFragment {
-    //private ListView listView;
-    TextView name;
-    TextView address;
     private String title;
     private ArrayList<Restaurant> mRestaurants;
     private int index = 0;

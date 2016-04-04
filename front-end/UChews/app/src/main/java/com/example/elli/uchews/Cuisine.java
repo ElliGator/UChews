@@ -86,4 +86,14 @@ public enum Cuisine {
         return null;
     }
 
+    public static Cuisine getCuisine(String cuisine_string) {
+        for(Cuisine c: Cuisine.values()) {
+            if(c.getName().equals(cuisine_string)){
+                return c;
+            }
+        }
+
+        return null;
+    }
+
 }
