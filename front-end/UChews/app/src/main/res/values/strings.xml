@@ -13,5 +13,28 @@
     <string name="history">History</string>
     <string name="restaurant_name">Name</string>
     <string name="restaurant_address">Address</string>
+    <string name="message">Incomplete Information. Please enter your missing information</string>
+    <string name="cuisine_pref">Please select 2 of your favorite Cuisines</string>
+    <string name="submit_btn">Submit</string>
 
+    <!--Cuisine Strings-->
+    <string name="american_text">American</string>
+    <string name="bbq_text">BBQ</string>
+    <string name="burgers_text">Burgers</string>
+    <string name="chinese_text">Chinese</string>
+    <string name="french_text">French</string>
+    <string name="indian_text">Indian</string>
+    <string name="italian_text">Italian</string>
+    <string name="japanese_text">Japanese</string>
+    <string name="korean_text">Korean</string>
+    <string name="mexican_text">Mexican</string>
+    <string name="mideast_text">Mid. East</string>
+    <string name="pizza_text">Pizza</string>
+    <string name="seafood_text">Seafood</string>
+    <string name="sushi_text">Sushi</string>
+    <string name="thai_text">Thai</string>
+    <string name="vege_text">Vegetarian</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -29,4 +29,14 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:id="@+id/quick"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:text="Quick Way"
+        android:layout_marginTop="67dp"
+        android:layout_alignTop="@+id/register"
+        android:layout_alignStart="@+id/register" />
+
 </RelativeLayout>
