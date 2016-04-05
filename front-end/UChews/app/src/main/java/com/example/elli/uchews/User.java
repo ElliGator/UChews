@@ -7,13 +7,15 @@ import org.json.JSONObject;
  */
 public class User {
     private String email;
+    private String password;
     private String fname;
     private String lname;
     private FactualLocality locality;
     private JSONObject cuisine_stats;
 
-    public User(String email, String fname, String lname, FactualLocality locality, JSONObject cuisine_stats) {
+    public User(String email, String password, String fname, String lname, FactualLocality locality, JSONObject cuisine_stats) {
         this.email = email;
+        this.password = password;
         this.fname = fname;
         this.lname = lname;
         this.locality = locality;
@@ -22,6 +24,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getFname() {

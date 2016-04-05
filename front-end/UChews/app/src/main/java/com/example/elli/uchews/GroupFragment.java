@@ -451,7 +451,7 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
                 Need to make sure cuisine it lands on matches selected weight
              */
             Cuisine chosen = mSelector.weightedSelect(mCuisine_weights);
-            mRestaurants = mSelector.groupSelect(chosen, FactualLocality.GAINESVILLE, FactualRegion.FLORIDA);
+            mRestaurants = mSelector.restaurantSelect(chosen, FactualLocality.GAINESVILLE, FactualRegion.FLORIDA);
             return chosen;
         }
 
