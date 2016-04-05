@@ -257,6 +257,11 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
         }
     }
 
+    /**
+     * Changes weight of user selected cuisine
+     * @param c Cuisine that user selected
+     * @param newWeight that user entered
+     */
     @Override
     public void editCuisineWeight(Cuisine c, int newWeight) {
         if(mCuisine_weights.containsKey(c)) {
@@ -353,7 +358,7 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
     private class SlotMachineAdapter extends AbstractWheelAdapter {
         // Image size
         final int IMAGE_WIDTH = 700;
-        final int IMAGE_HEIGHT = 150;
+        final int IMAGE_HEIGHT = 190;
 
         // Slot machine symbols
         private final int items[] = new int[] {

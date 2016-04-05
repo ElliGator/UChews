@@ -1,6 +1,8 @@
 package com.example.elli.uchews;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -22,8 +24,8 @@ public class RegistrationActivity extends FragmentActivity implements RegisterFr
         RegisterPrefsFragment.OnFragmentInteractionListener {
 
     private StandardUserDao userDao;
-    Bundle bundle;
-
+    private Bundle bundle;
+    private static final String PREFS_UNIQUE_IDENTIFIER = "com.example.uchews.user.data";
 
     /**
      * Factory Method for Fragment creation
@@ -73,7 +75,20 @@ public class RegistrationActivity extends FragmentActivity implements RegisterFr
         }
 
         Intent intent = new Intent(this, MainActivity.class);
+        saveDataToSharedPrefs(bundle);
         intent.putExtras(bundle); //to get extras in next activity "getIntent().getExtras()
         startActivity(intent);
+    }
+
+    private void saveDataToSharedPrefs(Bundle ubundle) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences
+                (PREFS_UNIQUE_IDENTIFIER, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("EMAIL", ubundle.getString("USER_EMAIL"));
+        editor.putString("PASSWORD", ubundle.getString("USER_PASS"));
+        editor.putString("FIRST_NAME", ubundle.getString("USER_FNAME"));
+
+        editor.apply();
     }
 }
