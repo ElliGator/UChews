@@ -127,7 +127,7 @@ public class StandardUserDao implements UserDAO{
         String email = resp.getString("email");
         String fname = resp.getString("fname");
         String lname = resp.getString("lname");
-        FactualLocality locality = FactualLocality.getLocalityByName(resp.getString("lname"));
+        FactualLocality locality = FactualLocality.getLocalityByName(resp.getString("locality"));
         JSONObject cuisines = resp.getJSONObject("cuisine_stats");
 
         return new User(email, password , fname, lname, locality, cuisines);
