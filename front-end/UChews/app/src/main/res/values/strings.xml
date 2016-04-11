@@ -2,9 +2,9 @@
     <string name="app_name">UChews</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="preference_data_key">com.example.uchews.user.data</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_indiv_fragment">Hello Individual fragment</string>
     <string name="cuisine_placeholder">Cuisine Type</string>
     <string name="chews_btn">Chews</string>
     <string name="yes_btn">Yes!</string>
@@ -16,6 +16,7 @@
     <string name="message">Incomplete Information. Please enter your missing information</string>
     <string name="cuisine_pref">Please select 2 of your favorite Cuisines</string>
     <string name="submit_btn">Submit</string>
+    <string name="welcome">Getting things ready...</string>
 
     <!--Cuisine Strings-->
     <string name="american_text">American</string>

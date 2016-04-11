@@ -13,7 +13,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private final ArrayList<Fragment> mFragList = new ArrayList<>();
     private final String mIndividualTab = "Solo";
-    private final String mGroupTab = "With Friends";
+    private final String mGroupTab = "Group";
 
     public ViewPagerAdapter(FragmentManager fm){
         super(fm);
@@ -36,7 +36,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         else if(getItem(position) instanceof  GroupFragment)
             return mGroupTab;
         else
-            throw new Resources.NotFoundException("Cannot find title");
+            throw new Resources.NotFoundException("Cannot find tab title");
     }
 
     public void addFragment(Fragment f){

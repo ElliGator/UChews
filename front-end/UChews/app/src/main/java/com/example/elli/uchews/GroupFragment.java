@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,7 +37,6 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
     private ArrayList<Restaurant> mRestaurants;
     private Cuisine[] indexes;
     private int global_index = 0;
-    private InitWheelTask mTask;
     private SpinWheelTask mSpinTask;
     private RestaurantDialog restaurantDialog;
     private EditCuisineDialog editDialog;
@@ -78,9 +78,8 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        //Async task initializes wheel view
-        mTask = new InitWheelTask();
-        mTask.execute(R.id.slot_1);
+        //Initialize wheel view
+        initWheel(R.id.slot_1);
 
         //Chews button
         chews_btn = (Button) getActivity().findViewById(R.id.grp_chews_btn);
@@ -114,7 +113,6 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        mTask.cancel(true);
         mSpinTask.cancel(true);
     }
 
@@ -208,7 +206,7 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
             /*decrement.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: find a way to get cuisine and decrement its weight
+
                 }
             });*/
 
@@ -257,6 +255,11 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
         }
     }
 
+    /**
+     * Changes weight of user selected cuisine
+     * @param c Cuisine that user selected
+     * @param newWeight that user entered
+     */
     @Override
     public void editCuisineWeight(Cuisine c, int newWeight) {
         if(mCuisine_weights.containsKey(c)) {
@@ -281,10 +284,11 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
     private void initWheel(int id) {
         WheelView wheel = getWheel(id);
         wheel.setViewAdapter(slotMachineAdapter);
-        wheel.setCurrentItem((int)(Math.random() * 10));
+        wheel.setCurrentItem((int) (Math.random() * 10));
 
         wheel.addChangingListener(changedListener);
         wheel.addScrollingListener(scrolledListener);
+        wheel.setInterpolator(new LinearInterpolator());
         wheel.setCyclic(true);
         wheel.setEnabled(false);
     }
@@ -353,7 +357,7 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
     private class SlotMachineAdapter extends AbstractWheelAdapter {
         // Image size
         final int IMAGE_WIDTH = 700;
-        final int IMAGE_HEIGHT = 150;
+        final int IMAGE_HEIGHT = 190;
 
         // Slot machine symbols
         private final int items[] = new int[] {
@@ -423,28 +427,15 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
 
     /**
      ============================================
-     =============ASYNCHRONOUS TASKS=============
+     =============ASYNCHRONOUS TASK==============
      ============================================ **/
 
-    private class InitWheelTask extends AsyncTask<Integer, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Integer... id) {
-            initWheel(id[0]);
-            return null;
-        }
-    }
-
     private class SpinWheelTask extends AsyncTask<Void, Integer, Cuisine> {
-        //TODO: BUG - cuisine being selected does not always match restaurants
         WheelView wheel = getWheel(R.id.slot_1);
         RestaurantSelector mSelector = new RestaurantSelector();
 
         @Override
         protected Cuisine doInBackground(Void... v) {
-            /*
-                Need to make sure cuisine it lands on matches selected weight
-             */
             Cuisine chosen = mSelector.weightedSelect(mCuisine_weights);
             mRestaurants = mSelector.restaurantSelect(chosen, FactualLocality.GAINESVILLE, FactualRegion.FLORIDA);
             return chosen;
@@ -456,10 +447,9 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
             restaurantDialog.setTitle(c.getName() + " Restaurants");
             restaurantDialog.setRestaurantList(mRestaurants);
 
-            //TODO: Wheel not always landing on selected weighted cuisine
-            //Wheel index may start at 1
-            int temp = getIndexOfCuisine(c) + 2;
-            wheel.setCurrentItem(temp, false);
+            //Wheel index starts @ 1 for added images
+            int temp = getIndexOfCuisine(c) + 1;
+            wheel.setCurrentItem(temp, true);
             //Dialog
             restaurantDialog.show(getFragmentManager(), "dialog");
         }
