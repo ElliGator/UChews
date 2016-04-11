@@ -16,6 +16,7 @@
     <string name="message">Incomplete Information. Please enter your missing information</string>
     <string name="cuisine_pref">Please select 2 of your favorite Cuisines</string>
     <string name="submit_btn">Submit</string>
+    <string name="welcome">Getting things ready...</string>
 
     <!--Cuisine Strings-->
     <string name="american_text">American</string>

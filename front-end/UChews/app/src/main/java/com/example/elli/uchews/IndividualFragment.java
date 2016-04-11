@@ -3,6 +3,8 @@ package com.example.elli.uchews;
 import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,15 +18,29 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import java.util.ArrayList;
 
 
 public class IndividualFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
+    private static final String PREFS_UNIQUE_IDENTIFIER = "com.example.uchews.user.data";
+    private static final String USER_FNAME_KEY = "FIRST_NAME";
+    private static final String USER_EMAIL_KEY = "EMAIL";
+    private static final String USER_PASS_KEY = "PASSWORD";
 
     private TextView mCenterPlate;
     private Button notoday_btn;
     private Button yes_btn;
     private Button no_btn;
+    private User user;
+    private StandardUserDao userDao;
+    private RestaurantSelector selector;
+    private ArrayList<Restaurant> mRestaurants;
+    private String rest_id;
+    private String name;
+    private String email;
+    private String password;
+    private int index = 0;
 
 
     public IndividualFragment() {
@@ -42,6 +58,13 @@ public class IndividualFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences sharedPrefs = getActivity().getSharedPreferences(PREFS_UNIQUE_IDENTIFIER, Context.MODE_PRIVATE);
+        userDao = new StandardUserDao();
+        selector = new RestaurantSelector();
+
+        email = sharedPrefs.getString(USER_EMAIL_KEY, "johnDoe@example.com");
+        password = sharedPrefs.getString(USER_PASS_KEY, "1234");
+        name = sharedPrefs.getString(USER_FNAME_KEY, "John");
     }
 
     @Override
@@ -54,25 +77,21 @@ public class IndividualFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
+        //Restaurant display
+        mCenterPlate = (TextView) getActivity().findViewById(R.id.rest_plate);
+        mCenterPlate.setText(R.string.welcome);
         //"No" button
         no_btn = (Button) getActivity().findViewById(R.id.no_btn);
-        no_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                animatePlate();
-            }
-        });
         //"Not Today" button
         notoday_btn = (Button) getActivity().findViewById(R.id.notToday_btn);
-        notoday_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                animatePlate();
-            }
-        });
         //"Yes" button
         yes_btn = (Button) getActivity().findViewById(R.id.yes_btn);
 
+        setOnClickListeners();
+        //retrieveUserData();
+
+        //String firstRest = getNextRestaurantName();
+        //mCenterPlate.setText(firstRest);
     }
 
     @Override
@@ -84,6 +103,12 @@ public class IndividualFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        retrieveUserData();
     }
 
     @Override
@@ -110,12 +135,97 @@ public class IndividualFragment extends Fragment {
      * Animates plate when user wants another suggestion
      */
     private void animatePlate() {
-        mCenterPlate = (TextView) getActivity().findViewById(R.id.rest_plate);
-
         ObjectAnimator animation = ObjectAnimator.ofFloat(mCenterPlate, "rotationY", 0.0f, 360f);
         animation.setDuration(3000);
         //animation.setRepeatCount(ObjectAnimator.INFINITE);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
         animation.start();
+    }
+
+    private void setOnClickListeners() {
+        no_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animatePlate();
+                //Rating -1
+                next(Rating.NEGATIVE);
+                mCenterPlate.setText(getNextRestaurantName());
+            }
+        });
+
+        notoday_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animatePlate();
+                //Rating 0
+                next(Rating.NEUTRAL);
+                mCenterPlate.setText(getNextRestaurantName());
+            }
+        });
+
+        yes_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Rating 1
+                next(Rating.POSITIVE);
+                //possibly lead to a fragment that gives restaurant info
+            }
+        });
+    }
+
+    private void next(Rating rating) {
+        //TODO: log history needs to run asynchronously
+        logUserHistory(rating);
+        incrementIndex();
+    }
+
+    private void incrementIndex() {
+        index++;
+    }
+
+    private String getNextRestaurantName() {
+        Restaurant next = mRestaurants.get(index);
+        setNextRestaurantId(next);
+
+        return next.getName();
+    }
+
+    private void setNextRestaurantId(Restaurant restaurant) {
+        this.rest_id = restaurant.getId();
+    }
+
+    private void retrieveUserData() {
+        new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                user = userDao.getUser(email, password);
+                mRestaurants = selector.individualSelect(user);
+
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean b) {
+                String firstRest = getNextRestaurantName();
+                mCenterPlate.setText(firstRest);
+                Log.d("Retrieving Data Test", "GetUser() successful?: " + b);
+            }
+        }.execute();
+    }
+
+    private void logUserHistory(Rating r) {
+        final Rating userRating = r;
+        new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return userDao.logHistory(email, rest_id, userRating);
+            }
+
+            protected void onPostExecute(Boolean bool) {
+                Log.d("Logging History", "Successfully Logged History? " + bool);
+            }
+        }.execute();
     }
 }
