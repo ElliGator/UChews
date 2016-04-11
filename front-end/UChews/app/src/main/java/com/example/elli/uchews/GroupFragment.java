@@ -37,7 +37,6 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
     private ArrayList<Restaurant> mRestaurants;
     private Cuisine[] indexes;
     private int global_index = 0;
-    private InitWheelTask mTask;
     private SpinWheelTask mSpinTask;
     private RestaurantDialog restaurantDialog;
     private EditCuisineDialog editDialog;
@@ -79,9 +78,8 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        //Async task initializes wheel view
-        mTask = new InitWheelTask();
-        mTask.execute(R.id.slot_1);
+        //Initialize wheel view
+        initWheel(R.id.slot_1);
 
         //Chews button
         chews_btn = (Button) getActivity().findViewById(R.id.grp_chews_btn);
@@ -115,7 +113,6 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        mTask.cancel(true);
         mSpinTask.cancel(true);
     }
 
@@ -430,17 +427,8 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
 
     /**
      ============================================
-     =============ASYNCHRONOUS TASKS=============
+     =============ASYNCHRONOUS TASK==============
      ============================================ **/
-
-    private class InitWheelTask extends AsyncTask<Integer, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Integer... id) {
-            initWheel(id[0]);
-            return null;
-        }
-    }
 
     private class SpinWheelTask extends AsyncTask<Void, Integer, Cuisine> {
         WheelView wheel = getWheel(R.id.slot_1);

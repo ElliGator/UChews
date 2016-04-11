@@ -29,17 +29,9 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences sharedPrefs = this.getSharedPreferences(PREFS_UNIQUE_IDENTIFIER, Context.MODE_PRIVATE);
         if(sharedPrefs.contains("EMAIL")) {
             reg_btn.setVisibility(View.GONE);
-            //progressBar.setVisibility(View.VISIBLE);
+
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
-            /*new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                }
-            }, 2000);*/
         }
 
         reg_btn.setOnClickListener(new View.OnClickListener() {
