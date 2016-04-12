@@ -174,7 +174,6 @@ public class IndividualFragment extends Fragment {
     }
 
     private void next(Rating rating) {
-        //TODO: log history needs to run asynchronously
         logUserHistory(rating);
         incrementIndex();
     }
@@ -200,6 +199,7 @@ public class IndividualFragment extends Fragment {
             @Override
             protected Boolean doInBackground(Void... params) {
                 user = userDao.getUser(email, password);
+                //TODO: Sometimes causing a null pointer
                 mRestaurants = selector.individualSelect(user);
 
                 return true;

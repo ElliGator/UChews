@@ -1,11 +1,15 @@
 package com.example.elli.uchews;
 
-import android.app.Activity;
+
 import android.app.Dialog;
+import android.content.ContextWrapper;
+import android.content.res.Resources;
 import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.app.AlertDialog;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +49,7 @@ public class EditCuisineDialog extends DialogFragment {
         LayoutInflater li = LayoutInflater.from(getContext());
         View view = li.inflate(R.layout.edit_cuisine_dialog, null);
         mDialogInterface = (DialogDataInterface) getTargetFragment();
-        Log.d("DEBUG ==>", "Dialog Interface Value: " + mDialogInterface.toString());
+
         savedInstanceState = getArguments();
 
         if(savedInstanceState != null){
@@ -54,7 +58,9 @@ public class EditCuisineDialog extends DialogFragment {
             this.weight = savedInstanceState.getInt("Weight");
         }
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext(), R.style.MyDialogTheme);
+
 
         // set edit_cuisine_dialog.xml to alertdialog builder
         alertDialogBuilder.setView(view);
@@ -65,9 +71,9 @@ public class EditCuisineDialog extends DialogFragment {
         cuisine.setText(cuisine_name);
         editWeight.setText(Integer.toString(weight));
 
-        // set dialog message
         alertDialogBuilder
                 .setTitle(title)
+                .setIcon(android.R.drawable.ic_menu_edit)
                 .setCancelable(false)
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -87,6 +93,8 @@ public class EditCuisineDialog extends DialogFragment {
         // create alert dialog
         final AlertDialog alertDialog = alertDialogBuilder.create();
 
+
+
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
@@ -102,17 +110,12 @@ public class EditCuisineDialog extends DialogFragment {
                 posButton.setLayoutParams(posParams);
                 negButton.setLayoutParams(negParams);
 
-                /*posButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String temp = editWeight.getText().toString();
-                        Log.d("DEBUG ==>", "OnClick: " + c);
-                        int newWeight = Integer.parseInt(temp);
-                        Log.d("DEBUG ==>", "OnClick: " + newWeight);
-                        mDialogInterface.editCuisineWeight(c, newWeight);
-
-                    }
-                });*/
+                Resources res = getResources();
+                int titleDividerId = res.getIdentifier("titleDivider", "id", "android");
+                View titleDivider = alertDialog.findViewById(titleDividerId);
+                int color = ContextCompat.getColor(getContext(), R.color.testing4);
+                if (titleDivider != null)
+                    titleDivider.setBackgroundColor(color);
             }
         });
 

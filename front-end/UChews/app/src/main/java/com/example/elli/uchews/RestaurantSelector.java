@@ -110,6 +110,7 @@ public class RestaurantSelector {
 
         //Connect to individual select webservice
         HashMap<String, String> params = new HashMap<String, String>();
+        //TODO: Elli - null pointer from here, may not be being found in the back-end
         params.put("email", user.getEmail());
         params.put("password", hashPassword(user.getPassword()));
 

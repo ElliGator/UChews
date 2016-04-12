@@ -2,9 +2,11 @@ package com.example.elli.uchews;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.content.ContextCompat;
+import android.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +41,7 @@ public class RestaurantDialog extends DialogFragment {
         LayoutInflater li = LayoutInflater.from(getContext());
         View view = li.inflate(R.layout.dialog_layout, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext(), R.style.MyDialogTheme);
 
         // set dialog_layout.xml to alertdialog builder
         alertDialogBuilder.setView(view);
@@ -52,7 +54,7 @@ public class RestaurantDialog extends DialogFragment {
         name.setText(restaurant.getName());
         address.setText(restaurant.getAddress());
 
-        // set dialog message
+        // set dialog_title message
         alertDialogBuilder
                 .setTitle(title)
                 .setCancelable(false)
@@ -64,7 +66,7 @@ public class RestaurantDialog extends DialogFragment {
                             }
                         });
 
-        // create alert dialog
+        // create alert dialog_title
         final AlertDialog alertDialog = alertDialogBuilder.create();
 
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -100,6 +102,13 @@ public class RestaurantDialog extends DialogFragment {
                         }
                     }
                 });
+
+                Resources res = getResources();
+                int titleDividerId = res.getIdentifier("titleDivider", "id", "android");
+                View titleDivider = alertDialog.findViewById(titleDividerId);
+                int color = ContextCompat.getColor(getContext(), R.color.testing4);
+                if (titleDivider != null)
+                    titleDivider.setBackgroundColor(color);
             }
         });
 
