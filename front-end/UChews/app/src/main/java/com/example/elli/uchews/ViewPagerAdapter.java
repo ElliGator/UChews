@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private final ArrayList<Fragment> mFragList = new ArrayList<>();
-    private final String mIndividualTab = "Solo";
-    private final String mGroupTab = "Group";
+    private final String mIndividualTab = "";
+    private final String mGroupTab = "";
 
     public ViewPagerAdapter(FragmentManager fm){
         super(fm);
