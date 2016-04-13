@@ -12,46 +12,45 @@
         android:layout_height="300dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Placeholder text"
+        android:text="@string/app_name"
         android:gravity="center"
         android:background="@drawable/plate" />
 
     <Button
         android:id="@+id/no_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:layout_toLeftOf="@+id/notToday_btn"
-        android:layout_marginRight="20dp"
-        android:layout_below="@+id/rest_plate"
-        android:layout_marginTop="25dp"
+        android:layout_margin="10dp"
         android:text="@string/no_btn"
         android:textSize="15sp"
-        android:background="@drawable/button"/>
+        android:textColor="@color/textColorPrimary"
+        android:background="@drawable/neg_button"
+        android:onClick="anotherSuggestion"
+        android:layout_below="@+id/notToday_btn" />
 
     <Button
         android:id="@+id/notToday_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/rest_plate"
-        android:layout_marginTop="25dp"
+        android:layout_margin="10dp"
         android:text="@string/pass_btn"
         android:textSize="15sp"
-        android:background="@drawable/button"
-        android:onClick="anotherSuggestion"/>
+        android:textColor="@color/textColorPrimary"
+        android:background="@drawable/neutral_button"
+        android:onClick="anotherSuggestion"
+        android:layout_below="@+id/yes_btn"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/yes_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/notToday_btn"
-        android:layout_marginLeft="20dp"
-        android:layout_below="@+id/rest_plate"
-        android:layout_marginTop="25dp"
+        android:layout_margin="10dp"
         android:text="@string/yes_btn"
         android:textSize="15sp"
-        android:background="@drawable/button"/>
+        android:textColor="@color/textColorPrimary"
+        android:background="@drawable/pos_button"
+        android:layout_below="@+id/rest_plate"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

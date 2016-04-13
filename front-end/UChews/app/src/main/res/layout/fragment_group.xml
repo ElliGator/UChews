@@ -21,17 +21,17 @@
 
     <Button
         android:id="@+id/grp_chews_btn"
-        android:layout_width="100dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/button"
+        android:background="@drawable/pos_button"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="12dp"
-        android:text="@string/chews_btn"/>
+        android:layout_margin="10dp"
+        android:text="@string/chews_btn"
+        android:textColor="@color/textColorPrimary"/>
 
     <HorizontalScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/cuisine_list"
