@@ -15,7 +15,7 @@
 	//Returns a list of restaurant ids
 	function selectUsingCollabFiltering($user_email, $user_password){
  		$closestNeighbor = getClosestNeighbor($user_email, $user_password);
- 		$neighborHistory = getUserAggHistory($user_email);
+ 		$neighborHistory = getUserAggHistory($closestNeighbor->email);
  		return $neighborHistory;
 	}
 
@@ -96,7 +96,6 @@
 	function vectorizeUserAsCuisineStats($user_email, $user_pwd){
 		$conn = openBackendConnection();
 
-		//Check if user is in cold start phase
 		$sql = "SELECT get_user_cuisines($1, $2);";
 		$result = pg_prepare($conn, 'cuisine', $sql);
 		$result = pg_execute($conn, 'cuisine', array($user_email, $user_pwd));
