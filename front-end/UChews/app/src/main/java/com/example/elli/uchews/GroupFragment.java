@@ -1,11 +1,13 @@
 package com.example.elli.uchews;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -451,7 +453,7 @@ public class GroupFragment extends Fragment implements EditCuisineDialog.DialogD
             int temp = getIndexOfCuisine(c) + 1;
             wheel.setCurrentItem(temp, true);
             //Dialog
-            restaurantDialog.show(getFragmentManager(), "dialog");
+            restaurantDialog.show(getFragmentManager(), "restaurant_dialog");
         }
     }
 }

@@ -61,7 +61,7 @@
         android:textSize="12sp"
         android:gravity="center"
         android:textColor="@color/navigationBarColor"
-        android:background="@drawable/circle"
+        android:background="@mipmap/ic_plate"
         android:onClick="addCuisine">
     </TextView>
 
