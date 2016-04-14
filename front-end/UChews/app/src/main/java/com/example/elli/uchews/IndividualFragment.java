@@ -1,6 +1,5 @@
 package com.example.elli.uchews;
 
-import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,15 +7,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
 
@@ -174,7 +170,7 @@ public class IndividualFragment extends Fragment {
     }
 
     private void next(Rating rating) {
-        logUserHistory(rating);
+        logUserHistory(rating, mRestaurants.get(index));
         incrementIndex();
     }
 
@@ -214,13 +210,13 @@ public class IndividualFragment extends Fragment {
         }.execute();
     }
 
-    private void logUserHistory(Rating r) {
+    private void logUserHistory(Rating r, final Restaurant rest) {
         final Rating userRating = r;
         new AsyncTask<Void, Void, Boolean>() {
 
             @Override
             protected Boolean doInBackground(Void... params) {
-                return userDao.logHistory(email, rest_id, userRating);
+                return userDao.logHistory(email, password , rest, userRating);
             }
 
             protected void onPostExecute(Boolean bool) {

@@ -3,6 +3,8 @@ package com.example.elli.uchews;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
+
 /**
  * Created by Chris on 4/4/2016.
  */
@@ -88,7 +90,10 @@ public class BackendInterfaceTester {
 
             @Override
             protected Boolean doInBackground(Void... params) {
-                return new StandardUserDao().logHistory("testUser", "79111919-65e1-4744-b039-c8541ad9d772", Rating.POSITIVE);
+                JSONArray cuisines = new JSONArray();
+                cuisines.put(358);
+                Restaurant r = new Restaurant("79111919-65e1-4744-b039-c8541ad9d772", "Olive Garden", "I don't care", FactualLocality.GAINESVILLE.getName(), FactualRegion.FLORIDA.getName(), "32612", 0.0, 0.0, cuisines, null, null);
+                return new StandardUserDao().logHistory("testUser","cc777c325fe5d7f39fc1bb44e1098dff09c88112", r, Rating.POSITIVE);
             }
 
             @Override

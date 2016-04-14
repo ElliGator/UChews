@@ -1,6 +1,9 @@
 package com.example.elli.uchews;
 
+import android.util.Log;
+
 import org.apache.commons.codec.binary.Hex;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -178,20 +181,24 @@ public class StandardUserDao implements UserDAO{
     }
 
 
-    public boolean logHistory(String email, String rest_id, Rating rating) {
+    public boolean logHistory(String email, String password, Restaurant restaurant, Rating rating) {
         Date currTime = Calendar.getInstance().getTime();
         String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(currTime);
 
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("email", email);
-        params.put("rest_id", rest_id);
+        params.put("password", password);
+        params.put("rest_id", restaurant.getId());
         params.put("rating", Integer.toString(rating.getMagnitude()));
         params.put("timestamp", timestamp);
+        params.put("cuisines", restaurant.getCuisines().toString());
+
 
         try {
             HttpURLConnection conn = WebServiceConnector.openWebServiceConnection(BASE_WEBSERVICE_URL + LOG_HISTORY_PATH, WebServiceConnector.Method.POST, params);
 
             String response = WebServiceConnector.readResponse(conn);
+            //Log.d("Backend Test", response);
             if (response.charAt(0) == 't')
                 return true;
         } catch (Exception e) {
