@@ -1,7 +1,13 @@
 #!/usr/local/bin/php
 <?php
 
-	ini_set('display_errors', 1);
+	ob_start();
+	require 'collaborative_filtering.php';
+	ob_end_clean();
+
+	
+	//ini_set('display_errors', 1);
+
 	$COLD_START_THRESHOLD = 10;
 	//Get arguments
 	$email = $_REQUEST['email'];
@@ -39,10 +45,15 @@
 	}
 	else
 	{
-		//Run collab filtering algorithm
+		$neighborRestaurants = json_decode(selectUsingCollabFiltering($email, $pwd));
+
+		$response = array("isInColdStart" => "false", "neighborRestaurants" => $neighborRestaurants);
+		$response = stripslashes(json_encode($response));
+
+		echo $response;
 	}
 
-	echo pg_last_error($conn);
-	echo pg_result_error($result);
+	//echo pg_last_error($conn);
+	//echo pg_result_error($result);
 
 ?>

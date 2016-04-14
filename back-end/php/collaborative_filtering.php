@@ -1,6 +1,10 @@
 #!/usr/local/bin/php
 <?php
 
+	ob_start();
+	require 'get_user_history.php';
+	ob_end_clean();
+
 	class User {
 		public $email = "";
 		public $password = "";
@@ -9,8 +13,10 @@
 	$DEFAULT_CUISINE_RATING = 0;
 
 	//Returns a list of restaurant ids
-	function selectUsingCollabFiltering($user_email){
- 
+	function selectUsingCollabFiltering($user_email, $user_password){
+ 		$closestNeighbor = getClosestNeighbor($user_email, $user_password);
+ 		$neighborHistory = getUserAggHistory($user_email);
+ 		return $neighborHistory;
 	}
 
 	//Returns 
@@ -76,7 +82,7 @@
 			$v1Mag += pow($v1[$key], 2);
 			$v2Mag += pow($v2[$key], 2);
 		}
-		
+
 		unset($key);
 		$v1Mag = sqrt($v1Mag);
 		$v2Mag = sqrt($v2Mag);
@@ -96,6 +102,8 @@
 		$result = pg_execute($conn, 'cuisine', array($user_email, $user_pwd));
 		$row = pg_fetch_row($result);
 		$user_cuisine_stats = json_decode($row[0], TRUE);
+		pg_close($conn);
+
 		return $user_cuisine_stats;
 	}
 
@@ -115,5 +123,5 @@
 	//$user2 = vectorizeUserAsCuisineStats('cwhitten@ufl.edu', 'eda405cc8daadace0151fefa92d6ba7ddf1bb598');
 	//echo "Angle: ".calculateAngleBetweenVectors($user1, $user2, $GLOBALS['DEFAULT_CUISINE_RATING']);
 
-	var_dump(getClosestNeighbor('tubby', '7b1f1ad7032ee95157646782ca3db19c30737e9d'));
+	//echo selectUsingCollabFiltering('tubby', '7b1f1ad7032ee95157646782ca3db19c30737e9d');
 ?>
